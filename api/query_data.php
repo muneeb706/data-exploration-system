@@ -87,7 +87,7 @@ if ($request == "list") {
           // }
           // @pg_close($dbconn);
         
-        $totalRecordsInDB = 10000;
+        $totalRecordsInDB = 100000;
      
         if ($totalRecordsInDB > 0) {
           $totalPages = ceil($totalRecordsInDB/$responseSize);
@@ -130,7 +130,7 @@ if ($request == "list") {
         $viewName = "";
         $numericCols = getNumericColumns($schema, True, $viewName, $dbconn);
   
-        $totalRecordsInDB = 10000;
+        $totalRecordsInDB = 100000;
      
         if ($totalRecordsInDB > 0) {
           $totalPages = ceil($totalRecordsInDB/$responseSize);
@@ -172,7 +172,7 @@ if ($request == "list") {
           $viewName = "";
           $numericCols = getNumericColumns($schema, True, $viewName, $dbconn);
   
-          $totalRecordsInDB = 10000;
+          $totalRecordsInDB = 100000;
      
           if ($totalRecordsInDB > 0) {
             $totalPages = ceil($totalRecordsInDB/$responseSize);

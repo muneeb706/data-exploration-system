@@ -206,7 +206,7 @@ if ($request == "list") {
         // @pg_close($dbconn);
         // echo $json_response;
 
-        $totalRecordsInDB = 10000;
+        $totalRecordsInDB = 100000;
      
         if ($totalRecordsInDB > 0) {
            $totalPages = ceil($totalRecordsInDB/$responseSize);

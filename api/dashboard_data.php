@@ -33,7 +33,7 @@ if ($request == "count") {
   //       echo $json_response;
   //   }
 
-  $response = array("type"=>"count", "requestId"=>$requestId, "name"=>$dataSource, "totalRecordsInDB"=>10000);
+  $response = array("type"=>"count", "requestId"=>$requestId, "name"=>$dataSource, "totalRecordsInDB"=>100000);
   $json_response = json_encode($response);
   echo $json_response;
 
