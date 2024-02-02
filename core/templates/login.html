@@ -21,32 +21,18 @@
             <h2 class="text-center mt-2">Data Exploration System</h2>
         </div>
         <div class="card">
-            <div id="login-failed-alert" class="alert alert-danger alert-dismissible" style="display: none">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                    &times;
-                </button>
-                <h5><i class="icon fas fa-ban"></i> Login Failed</h5>
-                <p>Invalid Username or Password, try again.</p>
-            </div>
-
             <div class="card-body login-card-body">
                 <!-- <p class="login-box-msg"><b>Log in</b></p> -->
-                <form action="./api/login_verify.php" method="post">
-                    <!-- 
-                TODO: Remove this after implementing login verification
-                <?php
-                      if (isset($_SESSION["errorMessage"]) && !empty($_SESSION["errorMessage"])) {?>
-            <script>
-              document.getElementById("login-failed-alert").style.display =
-                "block";
-            </script>
-            <?php
-                        unset($_SESSION["errorMessage"]);
-                      }
-                    ?> -->
+                <form action="{% url 'login' %}" method="post">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        <div id="login-failed-alert" class="alert alert-danger alert-dismissible">
+                            Invalid username or password.
+                        </div>
+                    {% endif %}
                     <div id="username-group" class="input-group mb-3">
-                        <label for="username-input" class="sr-only">Username</label>
-                        <input type="text" name="username" class="form-control" placeholder="Username" required />
+                        <label for="{{ form.username.id_for_label }}" class="sr-only">Username</label>
+                        {{ form.username }}
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -54,9 +40,8 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <label for="password-input" class="sr-only">Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="Password"
-                            autocomplete="on" required />
+                        <label for="{{ form.password.id_for_label }}" class="sr-only">Password</label>
+                        {{ form.password }}
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
