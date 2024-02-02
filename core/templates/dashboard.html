@@ -38,9 +38,12 @@
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
           <!-- Notifications Dropdown Menu -->
-            <a class="nav-link" id="log-out" title="log out" href="./api/logout.php">
-              <i class="fas fa-sign-out-alt"></i>
-            </a>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="nav-link" id="log-out" title="log out" type="submit">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+          </form>
       </ul>
     </nav>
     <!-- /.navbar -->

@@ -1,6 +1,7 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from .forms import AuthenticationForm, LoginForm
+from django.contrib.auth.decorators import login_required
+from .forms import LoginForm
 
 
 def login_view(request):
@@ -15,5 +16,6 @@ def login_view(request):
     return render(request, "login.html", {"form": form})
 
 
+@login_required
 def dashboard_view(request):
     return render(request, "dashboard.html")
