@@ -8,13 +8,14 @@ from django.contrib.auth import views as auth_views
 
 from django.urls import path
 
-from core.views import dashboard_view, login_view
+from core.views import dashboard_view, login_view, entity_count
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("login/", login_view, name="login"),
     path("dashboard/", dashboard_view, name="dashboard"),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("entity_count/", entity_count, name="entity_count"),
 ]
 
 if settings.DEBUG:
