@@ -33,3 +33,27 @@ def entity_count(request):
         count = random.randint(1, 100)  # Generate a random count
 
     return JsonResponse({"totalRecordsInDB": count})
+
+
+def element_list(request):
+    elements = [
+        {"DESCRIPTION": "Element1"},
+        {"DESCRIPTION": "Element2"},
+        {"DESCRIPTION": "Element3"},
+        {"DESCRIPTION": "Element4"},
+    ]
+
+    return JsonResponse({"data": elements})
+
+def elemenet_timeline_data(request):
+    element = request.GET.get('elementCode', None)
+    year_from = request.GET.get('yearFrom', None)
+    year_to = request.GET.get('yearTo', None)
+
+    data = {}
+
+    if element and year_from and year_to:
+        for year in range(int(year_from), int(year_to) + 1):
+            data[str(year)] = random.randint(1, 100)  # Generate a random value for each year
+
+    return JsonResponse({'data': data})

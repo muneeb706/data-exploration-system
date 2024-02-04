@@ -1,276 +1,334 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Data Exploration System | Dashboard</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-          href="{% static 'core/plugins/fontawesome-free/css/all.min.css' %}" />
-    <!-- Ionicons -->
-    <link rel="stylesheet"
-          href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
-    <!-- overlayScrollbars -->
-    <link rel="stylesheet"
-          href="{% static 'core/plugins/overlay-scrollbars/css/overlay-scrollbars.min.css' %}" />
-    <link href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css"
-          rel="stylesheet" />
-    <!-- Select2 -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/css/select2.min.css">
-    <link rel="stylesheet"
-          href="{% static 'core/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}" />
-    <!-- Theme style -->
-    <link rel="stylesheet"
-          href="{% static 'core/plugins/adminlte/css/adminlte.min.css' %}" />
-  </head>
-  <body class="hold-transition sidebar-mini layout-fixed">
-    <div class="wrapper">
-      <!-- Navbar -->
-      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
-          </li>
-        </ul>
-        <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Data Exploration System | Dashboard</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'core/plugins/fontawesome-free/css/all.min.css' %}" />
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static 'core/plugins/overlay-scrollbars/css/overlay-scrollbars.min.css' %}" />
+  <link
+    href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css"
+    rel="stylesheet" />
+  <!-- Select2 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/css/select2.min.css">
+  <link rel="stylesheet" href="{% static 'core/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}" />
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'core/plugins/adminlte/css/adminlte.min.css' %}" />
+
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+  <div class="wrapper">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+      <!-- Left navbar links -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+        </li>
+      </ul>
+      <!-- Right navbar links -->
+      <ul class="navbar-nav ml-auto">
           <!-- Notifications Dropdown Menu -->
           <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
             <button class="btn btn-link" id="log-out" title="log out" type="submit">
-              <i class="fas fa-sign-out-alt"></i>
+                <i class="fas fa-sign-out-alt"></i>
             </button>
           </form>
-        </ul>
-      </nav>
-      <!-- /.navbar -->
-      <!-- Main Sidebar Container -->
-      <aside class="main-sidebar sidebar-dark-primary elevation-4">
-        <!-- Brand Logo -->
-        <a href="index.php" class="brand-link">
-          <img src="{% static 'core/img/logo.png' %}"
-               alt="Data Exploration System Logo"
-               class="brand-image img-circle elevation-3"
-               style="opacity: .8" />
-          <span class="brand-text font-weight-light h6">Data Exploration System</span>
-        </a>
-        <!-- Sidebar -->
-        <div class="sidebar">
-          <!-- Sidebar Menu -->
-          <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column"
-                data-widget="treeview"
-                role="menu"
-                data-accordion="false">
-              <!-- Add icons to the links using the .nav-icon class
+      </ul>
+    </nav>
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="index.php" class="brand-link">
+        <img src="{% static 'core/img/logo.png' %}" alt="Data Exploration System Logo" class="brand-image img-circle elevation-3"
+          style="opacity: .8" />
+        <span class="brand-text font-weight-light h6">Data Exploration System</span>
+      </a>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-              <li class="nav-item has-treeview menu-open">
-                <a href="./index.php" class="nav-link active">
-                  <i class="nav-icon fas fa-tachometer-alt"></i>
-                  <p>Dashboard</p>
-                </a>
-              </li>
-              <li class="nav-item has-treeview">
-                <a href="./data-explorer.php" class="nav-link">
-                  <i class="nav-icon fas fa-table"></i>
-                  <p>Data Explorer</p>
-                </a>
-              </li>
-              <li class="nav-item has-treeview">
-                <a href="./data-downloader.php" class="nav-link">
-                  <i class="nav-icon fas fa-download"></i>
-                  <p>Data Downloader</p>
-                </a>
-              </li>
-            </ul>
-          </nav>
-          <!-- /.sidebar-menu -->
-        </div>
-        <!-- /.sidebar -->
-      </aside>
-      <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <div class="content-header">
-          <div class="container-fluid">
-            <div class="row mb-2">
-              <div class="col-sm-6">
-                <h1 class="m-0 text-dark">Dashboard</h1>
-              </div>
-              <!-- /.col -->
-              <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                  <li class="breadcrumb-item">
-                    <a href="#">Home</a>
-                  </li>
-                  <li class="breadcrumb-item active">Dashboard</li>
-                </ol>
-              </div>
-              <!-- /.col -->
+            <li class="nav-item has-treeview menu-open">
+              <a href="./index.php" class="nav-link active">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  Dashboard
+                </p>
+              </a>
+            </li>
+            <li class="nav-item has-treeview">
+              <a href="./data-explorer.php" class="nav-link">
+                <i class="nav-icon fas fa-table"></i>
+                <p>
+                  Data Explorer
+                </p>
+              </a>
+            </li>
+            <li class="nav-item has-treeview">
+              <a href="./data-downloader.php" class="nav-link">
+                <i class="nav-icon fas fa-download"></i>
+                <p>
+                  Data Downloader
+                </p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0 text-dark">Dashboard</h1>
             </div>
-            <!-- /.row -->
+            <!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+              </ol>
+            </div>
+            <!-- /.col -->
           </div>
-          <!-- /.container-fluid -->
+          <!-- /.row -->
         </div>
-        <!-- /.content-header -->
-        <!-- Main content -->
-        <section class="content">
-          <div class="container-fluid">
-            <!-- Small boxes (Stat box) -->
-            <div class="row">
-              <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div id="entity1-count" class="small-box bg-info">
-                  <div id="entity1" class="inner">
-                    <h3>150</h3>
-                    <p>Entity - 1</p>
-                  </div>
-                  <div class="icon">
-                    <i class="ion ion-waterdrop"></i>
-                  </div>
-                  <!--<a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>-->
+        <!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          <!-- Small boxes (Stat box) -->
+          <div class="row">
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div id="entity1-count" class="small-box bg-info">
+                <div id="entity1" class="inner">
+                  <h3>150</h3>
+                  <p>Entity - 1</p>
                 </div>
-              </div>
-              <!-- ./col -->
-              <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div id="entity2-count" class="small-box bg-success">
-                  <div class="inner">
-                    <h3>53</h3>
-                    <p>Entity - 2</p>
-                  </div>
-                  <div class="icon">
-                    <i class="ion ion-beaker"></i>
-                  </div>
-                  <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+                <div class="icon">
+                  <i class="ion ion-waterdrop"></i>
                 </div>
+                <!--<a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>-->
               </div>
-              <!-- ./col -->
-              <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div id="entity3-count" class="small-box bg-warning">
-                  <div class="inner">
-                    <h3>44</h3>
-                    <p>Entity - 3</p>
-                  </div>
-                  <div class="icon">
-                    <i class="ion ion-gear-b"></i>
-                  </div>
-                  <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
-                </div>
-              </div>
-              <!-- ./col -->
-              <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div id="entity4-count" class="small-box bg-danger">
-                  <div class="inner">
-                    <h3>65</h3>
-                    <p>Entity - 4</p>
-                  </div>
-                  <div class="icon">
-                    <i class="ion ion-erlenmeyer-flask"></i>
-                  </div>
-                  <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
-                </div>
-              </div>
-              <!-- ./col -->
             </div>
-            <!-- /.row -->
-            <!-- Main row -->
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card" id="entity5Viz">
-                  <div class="card-header">
-                    <h5 class="card-title">Entity - 5 Line Graph</h5>
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                        <i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove">
-                        <i class="fas fa-times"></i>
-                      </button>
-                    </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div id="entity2-count" class="small-box bg-success">
+                <div class="inner">
+                  <h3>53</h3>
+                  <p>Entity - 2</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-beaker"></i>
+                </div>
+                <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div id="entity3-count" class="small-box bg-warning">
+                <div class="inner">
+                  <h3>44</h3>
+                  <p>Entity - 3</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-gear-b"></i>
+                </div>
+                <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div id="entity4-count" class="small-box bg-danger">
+                <div class="inner">
+                  <h3>65</h3>
+                  <p>Entity - 4</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-erlenmeyer-flask"></i>
+                </div>
+                <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+              </div>
+            </div>
+            <!-- ./col -->
+          </div>
+          <!-- /.row -->
+          <!-- Main row -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card" id="entity5Viz">
+                <div class="card-header">
+                  <h5 class="card-title">Entity - 5 Line Graph</h5>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                      <i class="fas fa-times"></i>
+                    </button>
                   </div>
-                  <!-- /.card-header -->
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-md-8">
-                        <!-- <p class="text-center">
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <!-- <p class="text-center">
                         <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
-</p> -->
-                        <div class="chart">
-                          <!-- Sales Chart Canvas -->
-                          <canvas id="entity5Chart" height="180" style="height: 180px;"></canvas>
-                        </div>
-                        <!-- /.chart-responsive -->
+                      </p> -->
+
+                      <div class="chart">
+                        <!-- Sales Chart Canvas -->
+                        <canvas id="entity5Chart" height="180" style="height: 180px;"></canvas>
                       </div>
-                      <!-- /.col -->
-                      <div class="form-group col-md-4">
-                        <!-- <p class="text-center">
+                      <!-- /.chart-responsive -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="form-group col-md-4">
+                      <!-- <p class="text-center">
                         <strong>Goal Completion</strong>
                       </p>-->
-                        <label>Select Year Range</label>
-                        <div class="form-group input-group input-daterange" id="year-range">
-                          <input id="year-from" type="text" class="form-control" value="1990">
-                          <div class="input-group-text">to</div>
-                          <input id="year-to" type="text" class="form-control" value="2000">
-                        </div>
-                        <div class="form-group">
-                          <label>Select Element</label>
-                          <select id="element-select"
-                                  class="form-control select2"
-                                  data-placeholder="Select Element"
-                                  style="width: 100%"></select>
-                        </div>
-                        <div class="form-group">
-                          <button id="chart-submit"
-                                  title="Load Data"
-                                  class="btn btn-block btn-success"
-                                  onclick="loadChartData()">Apply</button>
-                        </div>
+                      <label>Select Year Range</label>
+
+                      <div class="form-group input-group input-daterange" id="year-range">
+                        <input id="year-from" type="text" class="form-control" value="1990">
+                        <div class="input-group-text">to</div>
+                        <input id="year-to" type="text" class="form-control" value="2000">
                       </div>
-                      <!-- /.col -->
+
+                      <div class="form-group">
+                        <label>Select Element</label>
+                        <select id="element-select"class="form-control select2" data-placeholder="Select Element" style="width: 100%;">
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <button id="chart-submit" title="Load Data" class="btn btn-block btn-success"
+                          onclick="loadChartData()">
+                          Apply
+                        </button>
+                      </div>
+
                     </div>
-                    <!-- /.row -->
+                    <!-- /.col -->
                   </div>
-                  <!-- ./card-body -->
-                  <div class="card-footer">
-                    <!-- /.card-footer -->
-                  </div>
-                  <!-- /.card -->
+                  <!-- /.row -->
                 </div>
-                <!-- /.col -->
+                <!-- ./card-body -->
+                <div class="card-footer">
+                  
+                <!-- /.card-footer -->
               </div>
-              <!-- /.row (main row) -->
+              <!-- /.card -->
             </div>
-            <!-- /.container-fluid -->
-          </section>
-          <!-- /.content -->
+            <!-- /.col -->
+          </div>
+          <!-- /.row (main row) -->
         </div>
-        <!-- /.content-wrapper -->
-        <footer class="main-footer">
-          <strong>&copy; 2020 - <a href="#" target="_blank">Muneeb Shahid</a></strong>
-        </footer>
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-          <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
-      </div>
-      <!-- ./wrapper -->
-      <!-- jQuery -->
-      <script src="{% static 'core/plugins/jquery/jquery.min.js' %}""></script> <!-- Bootstrap --> <script src=" {% static 'core/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script> <!-- overlayScrollbars -->
-      <link rel="stylesheet" href="{% static 'core/plugins/overlay-scrollbars/js/overlay-scrollbars.min.js' %}" /> <!-- AdminLTE App --> <script src="{% static 'core/plugins/adminlte/js/adminlte.min.js' %}"></script>  <!-- OPTIONAL SCRIPTS --> <script src="{% static 'core/plugins/adminlte/js/demo.js' %}"></script>  <script src="https://adminlte.io/themes/AdminLTE/bower_components/jquery/dist/jquery.min.js"></script> <script src="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script> <script src="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>  <!-- PAGE PLUGINS --> <!-- jQuery Mapael --> <script src="{% static 'core/plugins/jquery-mousewheel/jquery.mousewheel.js' %}"></script> <script src="{% static 'core/plugins/raphael/raphael.min.js' %}"></script> <script src="{% static 'core/plugins/jquery-mapael/jquery.mapael.min.js' %}"></script> <script src="{% static 'core/plugins/jquery-mapael/maps/usa_states.js' %}"></script> <!-- ChartJS --> <script src="{% static 'core/plugins/chart.js/Chart.min.js' %}"></script> <!-- daterangepicker --> <script src="{% static 'core/plugins/moment/moment.min.js' %}"></script> <script src="{% static 'core/plugins/daterangepicker/daterangepicker.js' %}"></script> <!-- PAGE SCRIPTS --> <script src="{% static 'core/plugins/adminlte/js/dashboard.js' %}"></script> <!-- Select2 --> <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/select2.full.min.js"></script>  <script> $(document).ready(function () { $('.select2').select2(); });  $('#year-range input').each(function () { $(this).datepicker({ autoclose: true, format: " yyyy", viewMode: "years", minViewMode: "years" }); //   $(this).datepicker('clearDates'); });  function getLoadingIndicatorHtml() { var html = "" + '<div id="loading-indicator" class="overlay">' + '<i class="fas fa-5x fa-sync-alt fa-spin"></i>' + "</div>
-";
+        <!-- /.container-fluid -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+      <strong>&copy; 2020 - <a href="#" target="_blank">Muneeb Shahid</a></strong>
+    </footer>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+  </div>
+  <!-- ./wrapper -->
+
+  <!-- jQuery -->
+
+  <script src="{% static 'core/plugins/jquery/jquery.min.js' %}""></script>
+  <!-- Bootstrap -->
+  <script src=" {% static 'core/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static 'core/plugins/overlay-scrollbars/js/overlay-scrollbars.min.js' %}" />
+  <!-- AdminLTE App -->
+  <script src="{% static 'core/plugins/adminlte/js/adminlte.min.js' %}"></script>
+
+  <!-- OPTIONAL SCRIPTS -->
+  <script src="{% static 'core/plugins/adminlte/js/demo.js' %}"></script>
+
+  <script src="https://adminlte.io/themes/AdminLTE/bower_components/jquery/dist/jquery.min.js"></script>
+  <script
+    src="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+  <script src="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <!-- PAGE PLUGINS -->
+  <!-- jQuery Mapael -->
+  <script src="{% static 'core/plugins/jquery-mousewheel/jquery.mousewheel.js' %}"></script>
+  <script src="{% static 'core/plugins/raphael/raphael.min.js' %}"></script>
+  <script src="{% static 'core/plugins/jquery-mapael/jquery.mapael.min.js' %}"></script>
+  <script src="{% static 'core/plugins/jquery-mapael/maps/usa_states.js' %}"></script>
+  <!-- ChartJS -->
+  <script src="{% static 'core/plugins/chart.js/Chart.min.js' %}"></script>
+  <!-- daterangepicker -->
+  <script src="{% static 'core/plugins/moment/moment.min.js' %}"></script>
+  <script src="{% static 'core/plugins/daterangepicker/daterangepicker.js' %}"></script>
+  <!-- PAGE SCRIPTS -->
+  <script src="{% static 'core/plugins/adminlte/js/dashboard.js' %}"></script>
+  <!-- Select2 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/select2.full.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+      $('.select2').select2();
+    });
+
+    $('#year-range input').each(function () {
+      $(this).datepicker({
+        autoclose: true,
+        format: " yyyy",
+        viewMode: "years",
+        minViewMode: "years"
+      });
+    //   $(this).datepicker('clearDates');
+    });
+
+    function getLoadingIndicatorHtml() {
+      var html =
+        "" +
+        '<div id="loading-indicator" class="overlay">' +
+        '<i class="fas fa-5x fa-sync-alt fa-spin"></i>' +
+        "</div>";
       return html;
     }
 
-    var defaultElementCodeDescription = "ABC, DEF, GHI AS N"
+    var defaultElementCodeDescription = "Element1"
     loadCounts()
     loadElement()
     loadChartData(true)
@@ -357,7 +415,7 @@
 
       var elementSelect = document.getElementById("element-select")
       var xmlhttp = new XMLHttpRequest();
-      var url = apiHost+"/dashboard_data.php?request=element-list"
+      var url = "/element_list"
       var res
       xmlhttp.onload = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -385,109 +443,108 @@
       xmlhttp.send();
     }
 
-    // //  //-----------------------
-    // //- CHART -
-    // //-----------------------
+    //-----------------------
+    //- CHART -
+    //-----------------------
 
-    // // Get context with jQuery - using jQuery's .get() method.
-    // var entity5ChartCanvas = $('#entity5Chart').get(0).getContext('2d')
+    // Get context with jQuery - using jQuery's .get() method.
+    var entity5ChartCanvas = $('#entity5Chart').get(0).getContext('2d')
 
 
-    // var entity5ChartData = {
-    //   labels: [],
-    //   datasets: [
-    //     {
-    //       label: 'Digital Goods',
-    //       backgroundColor: 'rgba(60,141,188,0.9)',
-    //       borderColor: 'rgba(60,141,188,0.8)',
-    //       pointRadius: false,
-    //       pointColor: '#3b8bba',
-    //       pointStrokeColor: 'rgba(60,141,188,1)',
-    //       pointHighlightFill: '#fff',
-    //       pointHighlightStroke: 'rgba(60,141,188,1)',
-    //       data: [28, 48, 40, 19, 86, 27, 90]
-    //     }
-    //   ]
-    // }
+    var entity5ChartData = {
+      labels: [],
+      datasets: [
+        {
+          label: 'Digital Goods',
+          backgroundColor: 'rgba(60,141,188,0.9)',
+          borderColor: 'rgba(60,141,188,0.8)',
+          pointRadius: false,
+          pointColor: '#3b8bba',
+          pointStrokeColor: 'rgba(60,141,188,1)',
+          pointHighlightFill: '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data: [28, 48, 40, 19, 86, 27, 90]
+        }
+      ]
+    }
 
-    // var entity5ChartOptions = {
-    //   maintainAspectRatio: false,
-    //   responsive: true,
-    //   legend: {
-    //     display: false
-    //   },
-    //   scales: {
-    //     xAxes: [{
-    //       gridLines: {
-    //         display: false,
-    //       },
-    //       scaleLabel: {
-    //         display: true,
-    //         labelString: 'Year'
-    //       }
-    //     }],
-    //     yAxes: [{
-    //       gridLines: {
-    //         display: false,
-    //       },
-    //       scaleLabel: {
-    //         display: true,
-    //         labelString: 'Percentage %'
-    //       }
-    //     }]
-    //   }
-    // }
+    var entity5ChartOptions = {
+      maintainAspectRatio: false,
+      responsive: true,
+      legend: {
+        display: false
+      },
+      scales: {
+        xAxes: [{
+          gridLines: {
+            display: false,
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Year'
+          }
+        }],
+        yAxes: [{
+          gridLines: {
+            display: false,
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Percentage %'
+          }
+        }]
+      }
+    }
 
-    // // This will get the first returned node in the jQuery collection.
-    // var entity5Chart = new Chart(entity5ChartCanvas, {
-    //   type: 'line',
-    //   data: entity5ChartData,
-    //   options: entity5ChartOptions
-    // }
-    // )
+    // This will get the first returned node in the jQuery collection.
+    var entity5Chart = new Chart(entity5ChartCanvas, {
+      type: 'line',
+      data: entity5ChartData,
+      options: entity5ChartOptions
+    }
+    )
 
-    // function loadChartData(init=false) {
-    //   var tempLIDiv1 = document.createElement("div")
-    //   tempLIDiv1.innerHTML = getLoadingIndicatorHtml()
-    //   var entity5Viz = document.getElementById("entity5Viz")
-    //   entity5Viz.appendChild(tempLIDiv1.firstElementChild)
-    //   var elementSelect = document.getElementById("element-select")
-    //   var elementValue = (init)?defaultElementCodeDescription:elementSelect.options[elementSelect.selectedIndex].value
-    //   // encoding plus '+' symbol as it is treated as space in url
-    //   elementValue = elementValue.replace(/\+/g, "PLUS-SIGN")
-    //   var yearFromValue = document.getElementById("year-from").value.trim()
-    //   var yearToValue = document.getElementById("year-to").value.trim()
-    //   var xmlhttp = new XMLHttpRequest();
-    //   var url = apiHost+"/dashboard_data.php?request=timeline&elementCodeDescription="+elementValue+"&yearFrom="+yearFromValue+"&yearTo="+yearToValue
-    //   var res
-    //   xmlhttp.onload = function () {
-    //     if (this.readyState == 4 && this.status == 200) {
-    //       res = JSON.parse(this.responseText)
-    //       labels = []
-    //       data = []
-    //       Object.keys(res['data']).forEach(year => {
-    //         labels.push(year)
-    //         data.push(res['data'][year])
-    //       })
-    //       entity5ChartData["labels"] = labels
-    //       entity5ChartData["datasets"][0]["data"] = data
-    //       entity5Chart["data"] = entity5ChartData
-    //       entity5Chart.update()
-    //      } else {
-    //         alert("Failed to get chart data for given element from server.")
-    //      }
-    //      entity5Viz.removeChild(entity5Viz.lastChild)
-    //   };
-    //   xmlhttp.open("GET", url, true);
-    //   xmlhttp.send();
-      
-
-    // }
+    function loadChartData(init=false) {
+      var tempLIDiv1 = document.createElement("div")
+      tempLIDiv1.innerHTML = getLoadingIndicatorHtml()
+      var entity5Viz = document.getElementById("entity5Viz")
+      entity5Viz.appendChild(tempLIDiv1.firstElementChild)
+      var elementSelect = document.getElementById("element-select")
+      var elementValue = (init)?defaultElementCodeDescription:elementSelect.options[elementSelect.selectedIndex].value
+      // encoding plus '+' symbol as it is treated as space in url
+      elementValue = elementValue.replace(/\+/g, "PLUS-SIGN")
+      var yearFromValue = document.getElementById("year-from").value.trim()
+      var yearToValue = document.getElementById("year-to").value.trim()
+      var xmlhttp = new XMLHttpRequest();
+      var url = "/element_timeline_data?elementCode="+elementValue+"&yearFrom="+yearFromValue+"&yearTo="+yearToValue
+      var res
+      xmlhttp.onload = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          res = JSON.parse(this.responseText)
+          labels = []
+          data = []
+          Object.keys(res['data']).forEach(year => {
+            labels.push(year)
+            data.push(res['data'][year])
+          })
+          entity5ChartData["labels"] = labels
+          entity5ChartData["datasets"][0]["data"] = data
+          entity5Chart["data"] = entity5ChartData
+          entity5Chart.update()
+         } else {
+            alert("Failed to get chart data for given element from server.")
+         }
+         entity5Viz.removeChild(entity5Viz.lastChild)
+      };
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+    }
 
 //---------------------------
 //- END CHART -
 //---------------------------
 
-      </script>
-    </body>
-  </html>
+  </script>
+</body>
+
+</html>
