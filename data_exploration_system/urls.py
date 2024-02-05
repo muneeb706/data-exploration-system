@@ -14,18 +14,30 @@ from core.views import (
     entity_count,
     element_list,
     elemenet_timeline_data,
+    data_explorer_view,
+    table_list,
+    query_list,
+    table_data_view,
+    query_data_view,
 )
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("login/", login_view, name="login"),
     path("dashboard/", dashboard_view, name="dashboard"),
+    path("data_explorer/", data_explorer_view, name="data_explorer"),
+    path("data_downloader/", dashboard_view, name="data_downloader"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("entity_count/", entity_count, name="entity_count"),
     path("element_list/", element_list, name="element_list"),
     path(
         "element_timeline_data/", elemenet_timeline_data, name="element_timeline_data"
     ),
+    path('table_list/', table_list, name='table_list'),
+    path('query_list/', query_list, name='query_list'),
+
+    path('table_data/', table_data_view, name='table_data'),
+    path('query_data/', query_data_view, name='query_data'),
 ]
 
 if settings.DEBUG:

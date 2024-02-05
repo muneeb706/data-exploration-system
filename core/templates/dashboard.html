@@ -37,7 +37,6 @@
       </ul>
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
-          <!-- Notifications Dropdown Menu -->
           <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
             <button class="btn btn-link" id="log-out" title="log out" type="submit">
@@ -51,7 +50,7 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
-      <a href="index.php" class="brand-link">
+      <a href="{% url 'dashboard' %}" class="brand-link">
         <img src="{% static 'core/img/logo.png' %}" alt="Data Exploration System Logo" class="brand-image img-circle elevation-3"
           style="opacity: .8" />
         <span class="brand-text font-weight-light h6">Data Exploration System</span>
@@ -65,7 +64,7 @@
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
             <li class="nav-item has-treeview menu-open">
-              <a href="./index.php" class="nav-link active">
+              <a href="{% url 'dashboard' %}" class="nav-link active">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
                   Dashboard
@@ -73,7 +72,7 @@
               </a>
             </li>
             <li class="nav-item has-treeview">
-              <a href="./data-explorer.php" class="nav-link">
+              <a href="{% url 'data_explorer' %}" class="nav-link">
                 <i class="nav-icon fas fa-table"></i>
                 <p>
                   Data Explorer
@@ -81,7 +80,7 @@
               </a>
             </li>
             <li class="nav-item has-treeview">
-              <a href="./data-downloader.php" class="nav-link">
+              <a href="{% url 'data_downloader' %}" class="nav-link">
                 <i class="nav-icon fas fa-download"></i>
                 <p>
                   Data Downloader
