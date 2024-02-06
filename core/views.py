@@ -51,6 +51,7 @@ def entity_count(request):
 
     return JsonResponse({"totalRecordsInDB": count})
 
+
 @login_required
 def element_list(request):
     elements = [
@@ -61,6 +62,7 @@ def element_list(request):
     ]
 
     return JsonResponse({"data": elements})
+
 
 @login_required
 def elemenet_timeline_data(request):
@@ -81,19 +83,23 @@ def elemenet_timeline_data(request):
 
 # Data Explorer and Data Downloader Views
 
+
 @login_required
 def table_list(request):
     tables = ["Table1", "Table2", "Table3", "Table4"]
     return JsonResponse({"data": tables})
+
 
 @login_required
 def query_list(request):
     queries = ["Query1", "Query2", "Query3", "Query4"]
     return JsonResponse({"data": queries})
 
+
 @login_required
 def table_data_view(request):
     return JsonResponse(demo_data(request, "table"))
+
 
 @login_required
 def query_data_view(request):
@@ -117,6 +123,7 @@ def demo_data(request, data_type):
 
     filtered_data = []
     paginated_data = []
+    numeric_cols = ["id", "age"]
     total_records = 0
 
     if data_source:
@@ -130,13 +137,20 @@ def demo_data(request, data_type):
                         field = filter["field"]
                         type = filter["type"]
                         value = filter["value"]
-                        if type == "like" and value.lower() not in row[field].lower():
+                        if field in numeric_cols:
+                            min_val, max_val = map(
+                                int, value.split("-")
+                            )  # assuming value is in the format "min-max"
+                            if not min_val <= int(row[field]) <= max_val:
+                                passes_filters = False
+                                break
+                        elif type == "like" and value.lower() not in row[field].lower():
                             passes_filters = False
                             break
                 if passes_filters:
                     total_records += 1
                     filtered_data.append(dict(row))
-        
+
         for i, row in enumerate(filtered_data):
             if i >= (page - 1) * size and i < page * size:
                 paginated_data.append(dict(row))
@@ -149,7 +163,7 @@ def demo_data(request, data_type):
         "data": paginated_data,
         "totalRecordsInDB": total_records,
         "last_page": total_pages,
-        "numericCols": ["id", "age"],
+        "numericCols": numeric_cols,
         "dropdownCols": {
             "profession": [
                 "doctor",
