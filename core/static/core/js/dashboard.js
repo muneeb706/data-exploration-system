@@ -23,6 +23,7 @@ function getLoadingIndicatorHtml() {
 var defaultElementCodeDescription = "Element1";
 loadCounts();
 loadElement();
+loadChartData(true);
 
 function loadCounts() {
   var tempLIDiv1 = document.createElement("div");
@@ -200,7 +201,7 @@ var entity5Chart = new Chart(entity5ChartCanvas, {
   options: entity5ChartOptions,
 });
 
-window.loadChartData = function (init = false) {
+function loadChartData(init = false) {
   var tempLIDiv1 = document.createElement("div");
   tempLIDiv1.innerHTML = getLoadingIndicatorHtml();
   var entity5Viz = document.getElementById("entity5Viz");
@@ -242,9 +243,7 @@ window.loadChartData = function (init = false) {
   };
   xmlhttp.open("GET", url, true);
   xmlhttp.send();
-};
-
-loadChartData(true);
+}
 
 //---------------------------
 //- END CHART -
