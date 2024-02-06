@@ -710,7 +710,7 @@
       }
 
       // worker for downloading the data
-      var worker = new Worker("{% static 'core/plugins/js/worker.js' %}", { type: 'module' });
+      var worker = new Worker("{% static 'core/js/worker.js' %}", { type: 'module' });
 
       function downloadTable(source) {
         var continueDownload = false;
