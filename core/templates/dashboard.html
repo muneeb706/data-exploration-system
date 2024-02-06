@@ -12,8 +12,6 @@
   <link rel="stylesheet" href="{% static 'core/plugins/fontawesome-free/css/all.min.css' %}" />
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="{% static 'core/plugins/overlay-scrollbars/css/overlay-scrollbars.min.css' %}" />
   <link
     href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css"
     rel="stylesheet" />
@@ -37,12 +35,12 @@
       </ul>
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
-          <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button class="btn btn-link" id="log-out" title="log out" type="submit">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-          </form>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button class="btn btn-link" id="log-out" title="log out" type="submit">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </form>
       </ul>
     </nav>
     <!-- /.navbar -->
@@ -51,8 +49,8 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
       <a href="{% url 'dashboard' %}" class="brand-link">
-        <img src="{% static 'core/img/logo.png' %}" alt="Data Exploration System Logo" class="brand-image img-circle elevation-3"
-          style="opacity: .8" />
+        <img src="{% static 'core/img/logo.png' %}" alt="Data Exploration System Logo"
+          class="brand-image img-circle elevation-3" style="opacity: .8" />
         <span class="brand-text font-weight-light h6">Data Exploration System</span>
       </a>
 
@@ -225,7 +223,8 @@
 
                       <div class="form-group">
                         <label>Select Element</label>
-                        <select id="element-select"class="form-control select2" data-placeholder="Select Element" style="width: 100%;">
+                        <select id="element-select" class="form-control select2" data-placeholder="Select Element"
+                          style="width: 100%;">
                         </select>
                       </div>
 
@@ -243,16 +242,16 @@
                 </div>
                 <!-- ./card-body -->
                 <div class="card-footer">
-                  
-                <!-- /.card-footer -->
+
+                  <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
               </div>
-              <!-- /.card -->
+              <!-- /.col -->
             </div>
-            <!-- /.col -->
+            <!-- /.row (main row) -->
           </div>
-          <!-- /.row (main row) -->
-        </div>
-        <!-- /.container-fluid -->
+          <!-- /.container-fluid -->
       </section>
       <!-- /.content -->
     </div>
@@ -274,8 +273,6 @@
   <script src="{% static 'core/plugins/jquery/jquery.min.js' %}""></script>
   <!-- Bootstrap -->
   <script src=" {% static 'core/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="{% static 'core/plugins/overlay-scrollbars/js/overlay-scrollbars.min.js' %}" />
   <!-- AdminLTE App -->
   <script src="{% static 'core/plugins/adminlte/js/adminlte.min.js' %}"></script>
 
@@ -302,8 +299,198 @@
   <script src="{% static 'core/plugins/adminlte/js/dashboard.js' %}"></script>
   <!-- Select2 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/select2.full.min.js"></script>
-  <!-- Custom Scripts -->
-  <script src="{% static 'core/js/dashboard.js' %}"></script>
+  <!-- Utils -->
+  <script src="{% static 'core/js/common.js' %}"></script>
+  <script>
+    $(document).ready(function () {
+      initializeSelect2Elements();
+      initializeDatepickers();
+      loadDashboardData();
+    });
+
+    const defaultElementCode = "Element1";
+
+    function initializeSelect2Elements() {
+      $(".select2").select2();
+    }
+
+    function initializeDatepickers() {
+      $("#year-range input").each(function () {
+        $(this).datepicker({
+          autoclose: true,
+          format: " yyyy",
+          viewMode: "years",
+          minViewMode: "years",
+        });
+      });
+    }
+
+    function loadDashboardData() {
+      loadCounts();
+      loadElement();
+      loadChartData(true);
+    }
+
+    function loadCounts() {
+      loadEntityCount("entity1-count", "/entity_count?dataSource=ENTITY1");
+      loadEntityCount("entity2-count", "/entity_count?dataSource=ENTITY2");
+      loadEntityCount("entity3-count", "/entity_count?dataSource=ENTITY3");
+      loadEntityCount("entity4-count", "/entity_count?dataSource=ENTITY4");
+    }
+
+    function loadEntityCount(elementId, url) {
+      const tempLIDiv = document.createElement("div");
+      tempLIDiv.innerHTML = getLoadingIndicatorHtml();
+
+      const entityCountBox = document.getElementById(elementId);
+      entityCountBox.appendChild(tempLIDiv.firstElementChild);
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Failed to get ${elementId} from server.`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          entityCountBox.querySelector("h3").innerHTML = data["totalRecordsInDB"];
+          entityCountBox.removeChild(entityCountBox.lastChild);
+        })
+        .catch(error => {
+          alert(error.message);
+        });
+    }
+
+    function loadElement() {
+      const elementSelect = document.getElementById("element-select");
+      const url = "/element_list";
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          elementSelect.innerHTML = '<option value="" disabled>Select Element</option>';
+
+          data["data"].forEach((element, index) => {
+            const option = document.createElement("option");
+            option.value = element["DESCRIPTION"];
+            option.text = element["DESCRIPTION"];
+
+            if (element["DESCRIPTION"] === defaultElementCode) {
+              option.selected = true;
+              elementSelect.selectedIndex = index + 1;
+            }
+
+            elementSelect.appendChild(option);
+          });
+        })
+        .catch(() => {
+          alert("Failed to get element list from server.");
+        });
+    }
+
+    //-----------------------
+    //- CHART -
+    //-----------------------
+
+    // Get context with jQuery - using jQuery's .get() method.
+    const entity5ChartCanvas = $("#entity5Chart").get(0).getContext("2d");
+
+    let entity5ChartData = {
+      labels: [],
+      datasets: [
+        {
+          label: "Digital Goods",
+          backgroundColor: "rgba(60,141,188,0.9)",
+          borderColor: "rgba(60,141,188,0.8)",
+          pointRadius: false,
+          pointColor: "#3b8bba",
+          pointStrokeColor: "rgba(60,141,188,1)",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(60,141,188,1)",
+          data: [],
+        },
+      ],
+    };
+
+    const entity5ChartOptions = {
+      maintainAspectRatio: false,
+      responsive: true,
+      legend: {
+        display: false,
+      },
+      scales: {
+        xAxes: [
+          {
+            gridLines: {
+              display: false,
+            },
+            scaleLabel: {
+              display: true,
+              labelString: "Year",
+            },
+          },
+        ],
+        yAxes: [
+          {
+            gridLines: {
+              display: false,
+            },
+            scaleLabel: {
+              display: true,
+              labelString: "Percentage %",
+            },
+          },
+        ],
+      },
+    };
+
+    // This will get the first returned node in the jQuery collection.
+    const entity5Chart = new Chart(entity5ChartCanvas, {
+      type: "line",
+      data: entity5ChartData,
+      options: entity5ChartOptions,
+    });
+
+    function loadChartData(init = false) {
+      const tempLIDiv1 = document.createElement("div");
+      tempLIDiv1.innerHTML = getLoadingIndicatorHtml();
+      const entity5Viz = document.getElementById("entity5Viz");
+      entity5Viz.appendChild(tempLIDiv1.firstElementChild);
+      const elementSelect = document.getElementById("element-select");
+      let elementValue = init
+        ? defaultElementCode
+        : elementSelect.options[elementSelect.selectedIndex].value;
+      // encoding plus '+' symbol as it is treated as space in url
+      elementValue = elementValue.replace(/\+/g, "PLUS-SIGN");
+      const yearFromValue = document.getElementById("year-from").value.trim();
+      const yearToValue = document.getElementById("year-to").value.trim();
+      const url = `/element_timeline_data?elementCode=${elementValue}&yearFrom=${yearFromValue}&yearTo=${yearToValue}`;
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Failed to get chart data for given element from server.");
+          }
+          return response.json();
+        })
+        .then(data => {
+          const labels = Object.keys(data["data"]);
+          const dataPoints = Object.values(data["data"]);
+          entity5ChartData.labels = labels;
+          entity5ChartData.datasets[0].data = dataPoints;
+          entity5Chart.update();
+          entity5Viz.removeChild(entity5Viz.lastChild);
+        })
+        .catch(error => {
+          alert(error.message);
+        });
+    }
+
+    //---------------------------
+    //- END CHART -
+    //---------------------------
+
+  </script>
 
 </body>
 
