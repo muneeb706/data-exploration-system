@@ -35,7 +35,13 @@ def data_explorer_view(request):
     return render(request, "data_explorer.html")
 
 
+@login_required
+def data_downloader_view(request):
+    return render(request, "data_downloader.html")
+
+
 # Dashboard Views
+@login_required
 def entity_count(request):
     data_source = request.GET.get("dataSource", None)
     count = None
@@ -45,7 +51,7 @@ def entity_count(request):
 
     return JsonResponse({"totalRecordsInDB": count})
 
-
+@login_required
 def element_list(request):
     elements = [
         {"DESCRIPTION": "Element1"},
@@ -56,7 +62,7 @@ def element_list(request):
 
     return JsonResponse({"data": elements})
 
-
+@login_required
 def elemenet_timeline_data(request):
     element = request.GET.get("elementCode", None)
     year_from = request.GET.get("yearFrom", None)
@@ -73,28 +79,28 @@ def elemenet_timeline_data(request):
     return JsonResponse({"data": data})
 
 
-# Data Explorer Views
+# Data Explorer and Data Downloader Views
 
-
+@login_required
 def table_list(request):
     tables = ["Table1", "Table2", "Table3", "Table4"]
     return JsonResponse({"data": tables})
 
-
+@login_required
 def query_list(request):
     queries = ["Query1", "Query2", "Query3", "Query4"]
     return JsonResponse({"data": queries})
 
-
+@login_required
 def table_data_view(request):
-    return JsonResponse(data_explorer_demo_data(request, "table"))
+    return JsonResponse(demo_data(request, "table"))
 
-
+@login_required
 def query_data_view(request):
-    return JsonResponse(data_explorer_demo_data(request, "query"))
+    return JsonResponse(demo_data(request, "query"))
 
 
-def data_explorer_demo_data(request, data_type):
+def demo_data(request, data_type):
     data_source = request.GET.get("dataSource", None)
     page = int(request.GET.get("page", 1))
     size = int(request.GET.get("size", 100))
@@ -114,7 +120,7 @@ def data_explorer_demo_data(request, data_type):
     total_records = 0
 
     if data_source:
-        file_path = f"core/static/core/data/data_explorer_demo_data.csv"
+        file_path = f"core/static/core/data/demo_data.csv"
         with open(file_path, "r") as file:
             reader = csv.DictReader(file)
             for i, row in enumerate(reader):
