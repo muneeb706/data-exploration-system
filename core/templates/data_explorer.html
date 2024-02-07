@@ -321,116 +321,79 @@
 
         function getData() {
             return new Promise((resolve, reject) => {
-                var totalDataReceived = 0;
-                var dsSelectionToolElem = document.getElementById(
-                    "data-source-selection-tool-body"
-                );
-                var totalDataSources = dsSelectionToolElem.children.length;
-                var dataList = [];
-                for (var i = 0; i < totalDataSources; i++) {
-                    var dataSource = dsSelectionToolElem.children[i];
-                    var dataSourceTypeSelector = dataSource.querySelector(
-                        "#" + dataSource.id + "-type"
-                    );
-                    var dataSourceNameSelector = dataSource.querySelector(
-                        "#" + dataSource.id + "-name"
-                    );
-                    var data = {};
-                    var type =
-                        dataSourceTypeSelector.options[
-                            dataSourceTypeSelector.selectedIndex
-                        ].value;
-                    var name =
-                        dataSourceNameSelector.options[
-                            dataSourceNameSelector.selectedIndex
-                        ].value;
-                    if (type != "" && name != "") {
-                        data["type"] = type;
-                        data["name"] = name;
-                        data["data"] = [];
+                const dsSelectionToolElem = document.getElementById("data-source-selection-tool-body");
+                const totalDataSources = dsSelectionToolElem.children.length;
+                let totalDataReceived = 0;
+                const dataList = [];
+
+                Array.from(dsSelectionToolElem.children).forEach(dataSource => {
+                    const dataSourceTypeSelector = dataSource.querySelector(`#${dataSource.id}-type`);
+                    const dataSourceNameSelector = dataSource.querySelector(`#${dataSource.id}-name`);
+                    const type = dataSourceTypeSelector.value;
+                    const name = dataSourceNameSelector.value;
+
+                    if (type && name) {
+                        const data = {
+                            type,
+                            name,
+                            data: []
+                        };
+
                         dataList.push(data);
-                        if (data["type"] == "table") {
-                            var xmlhttp = new XMLHttpRequest();
-                            var url = "/table_data?dataSource=" + data["name"];
-                            var res;
+
+                        if (type === "table" || type === "query") {
+                            const xmlhttp = new XMLHttpRequest();
+                            const url = `/${type}_data?dataSource=${name}`;
+
                             xmlhttp.onload = function () {
-                                if (this.readyState == 4 && this.status == 200) {
-                                    res = JSON.parse(this.responseText);
-                                    var data = dataList.find(
-                                        (data) =>
-                                            data["type"] == res["type"] &&
-                                            data["name"] == res["name"]
-                                    );
-                                    data["data"] = res["data"];
-                                    data["numericCols"] = res["numericCols"];
-                                    data["dropdownCols"] = res["dropdownCols"];
+                                if (this.readyState === 4 && this.status === 200) {
+                                    const res = JSON.parse(this.responseText);
+                                    const data = dataList.find(data => data.type === res.type && data.name === res.name);
+
+                                    Object.assign(data, {
+                                        data: res.data,
+                                        numericCols: res.numericCols,
+                                        dropdownCols: res.dropdownCols
+                                    });
+
                                     totalDataReceived++;
-                                    if (totalDataReceived == totalDataSources) {
+                                    if (totalDataReceived === totalDataSources) {
                                         resolve(dataList);
                                     }
                                 } else {
                                     alert("Failed to receive data from server.");
                                 }
                             };
-                            xmlhttp.open("GET", url, true);
-                            xmlhttp.send();
-                        } else if (data["type"] == "query") {
-                            var xmlhttp = new XMLHttpRequest();
-                            var url = "/query_data?dataSource=" + data["name"];
-                            var res;
-                            xmlhttp.onload = function () {
-                                if (this.readyState == 4 && this.status == 200) {
-                                    res = JSON.parse(this.responseText);
-                                    var data = dataList.find(
-                                        (data) =>
-                                            data["type"] == res["type"] &&
-                                            data["name"] == res["name"]
-                                    );
-                                    data["data"] = res["data"];
-                                    data["numericCols"] = res["numericCols"];
-                                    data["dropdownCols"] = res["dropdownCols"];
-                                    totalDataReceived++;
-                                    if (totalDataReceived == totalDataSources) {
-                                        resolve(dataList);
-                                    }
-                                } else {
-                                    alert("Failed to receive data from server.");
-                                }
-                            };
+
                             xmlhttp.open("GET", url, true);
                             xmlhttp.send();
                         }
                     } else {
                         totalDataReceived++;
-                        if (totalDataReceived == totalDataSources) {
+                        if (totalDataReceived === totalDataSources) {
                             resolve(dataList);
                         }
                     }
-                }
+                });
             });
         }
 
         function downloadTable(source) {
-            var table = tables.find((table) => table["downloadId"] == source.id);
-            table["table"].download(
-                "csv",
-                table["name"] + "-" + table["table"].getPage() + ".csv",
-                { sheetName: "data" }
-            );
+            const { table, name } = tables.find(({ downloadId }) => downloadId === source.id);
+            const filename = `${name}-${table.getPage()}.csv`;
+            table.download("csv", filename, { sheetName: "data" });
         }
 
         function clearDataHeaderFilter(source) {
-            var table = tables.find((table) => table["refreshId"] == source.id);
-            table["table"].clearHeaderFilter();
+            const { table } = tables.find(({ refreshId }) => refreshId === source.id);
+            table.clearHeaderFilter();
         }
 
         function resetRecordsPerPage(source) {
-            var table = tables.find(
-                (table) => table["recordsPerPageId"] == source.id
-            );
-            var pageSize = document.getElementById(source.id).value;
-            table["table"].setPageSize(pageSize);
-            table["table"].clearHeaderFilter();
+            const { table } = tables.find(({ recordsPerPageId }) => recordsPerPageId === source.id);
+            const pageSize = document.getElementById(source.id).value;
+            table.setPageSize(pageSize);
+            table.clearHeaderFilter();
         }
     </script>
 </body>
