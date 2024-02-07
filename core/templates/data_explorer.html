@@ -1,468 +1,376 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Data Exploration System | Data Explorer</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="{% static 'core/plugins/fontawesome-free/css/all.min.css' %}"
-    />
-    <!-- Tabulator -->
-    <link
-      href="https://unpkg.com/tabulator-tables@4.5.3/dist/css/tabulator.min.css"
-      rel="stylesheet"
-    />
-    <!-- Select2 -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/css/select2.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'core/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
-    />
-
-    <!-- Theme style -->
-    <link
-      rel="stylesheet"
-      href="{% static 'core/plugins/adminlte/css/adminlte.min.css' %}"
-    />
-  </head>
-
-  <body class="hold-transition sidebar-mini">
-    <div class="wrapper">
-      <!-- Navbar -->
-      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+{% block title %}Data Exploration System | Data Explorer{% endblock %}
+{% block extra_css %}
+<!-- Tabulator -->
+<link href="https://unpkg.com/tabulator-tables@4.5.3/dist/css/tabulator.min.css" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+<div class="wrapper">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#"
-              ><i class="fas fa-bars"></i
-            ></a>
-          </li>
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+            </li>
         </ul>
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
-          <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button
-              class="btn btn-link"
-              id="log-out"
-              title="log out"
-              type="submit"
-            >
-              <i class="fas fa-sign-out-alt"></i>
-            </button>
-          </form>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="btn btn-link" id="log-out" title="log out" type="submit">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </form>
         </ul>
-      </nav>
-      <!-- /.navbar -->
-
-      <!-- Main Sidebar Container -->
-      <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    </nav>
+    <!-- /.navbar -->
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
         <a href="{% url 'dashboard' %}" class="brand-link">
-          <img
-            src="{% static 'core/img/logo.png' %}"
-            alt="Data Exploration System Logo"
-            class="brand-image img-circle elevation-3"
-            style="opacity: 0.8"
-          />
-          <span class="brand-text font-weight-light h6"
-            >Data Exploration System</span
-          >
+            <img src="{% static 'core/img/logo.png' %}" alt="Data Exploration System Logo"
+                class="brand-image img-circle elevation-3" style="opacity: 0.8" />
+            <span class="brand-text font-weight-light h6">Data Exploration System</span>
         </a>
-
         <!-- Sidebar -->
         <div class="sidebar">
-          <!-- Sidebar Menu -->
-          <nav class="mt-2">
-            <ul
-              class="nav nav-pills nav-sidebar flex-column"
-              data-widget="treeview"
-              role="menu"
-              data-accordion="false"
-            >
-              <!-- Add icons to the links using the .nav-icon class
+            <!-- Sidebar Menu -->
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                    data-accordion="false">
+                    <!-- Add icons to the links using the .nav-icon class
                  with font-awesome or any other icon font library -->
-              <li class="nav-item has-treeview menu-open">
-                <a href="{% url 'dashboard' %}" class="nav-link">
-                  <i class="nav-icon fas fa-tachometer-alt"></i>
-                  <p>Dashboard</p>
-                </a>
-              </li>
-              <li class="nav-item has-treeview">
-                <a href="{% url 'data_explorer' %}" class="nav-link active">
-                  <i class="nav-icon fas fa-table"></i>
-                  <p>Data Explorer</p>
-                </a>
-              </li>
-              <li class="nav-item has-treeview">
-                <a href="{% url 'data_downloader' %}" class="nav-link">
-                  <i class="nav-icon fas fa-download"></i>
-                  <p>Data Downloader</p>
-                </a>
-              </li>
-            </ul>
-          </nav>
-          <!-- /.sidebar-menu -->
+                    <li class="nav-item has-treeview menu-open">
+                        <a href="{% url 'dashboard' %}" class="nav-link">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p>Dashboard</p>
+                        </a>
+                    </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'data_explorer' %}" class="nav-link active">
+                            <i class="nav-icon fas fa-table"></i>
+                            <p>Data Explorer</p>
+                        </a>
+                    </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'data_downloader' %}" class="nav-link">
+                            <i class="nav-icon fas fa-download"></i>
+                            <p>Data Downloader</p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
         </div>
         <!-- /.sidebar -->
-      </aside>
-
-      <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper">
+    </aside>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-          <div class="container-fluid">
-            <div class="row mb-2">
-              <div class="col-sm-6">
-                <!-- <h1>Data Table</h1> -->
-              </div>
-              <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                  <li class="breadcrumb-item">
-                    <a href="{% url 'dashboard' %}">Home</a>
-                  </li>
-                  <li class="breadcrumb-item active">Data Explorer</li>
-                </ol>
-              </div>
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <!-- <h1>Data Table</h1> -->
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'dashboard' %}">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active">Data Explorer</li>
+                        </ol>
+                    </div>
+                </div>
             </div>
-          </div>
-          <!-- /.container-fluid -->
+            <!-- /.container-fluid -->
         </section>
-
         <!-- Main content -->
         <section class="content">
-          <div class="row">
-            <div class="col-12">
-              <div id="data-source-selection-tool" class="card">
-                <div class="card-header">
-                  <h4>Data Source Selection Tool</h4>
-                  <div class="card-tools">
-                    <button
-                      type="button"
-                      title="Minimize"
-                      class="btn btn-tool"
-                      data-card-widget="collapse"
-                    >
-                      <i class="fas fa-minus"></i>
-                    </button>
-                  </div>
+            <div class="row">
+                <div class="col-12">
+                    <div id="data-source-selection-tool" class="card">
+                        <div class="card-header">
+                            <h4>Data Source Selection Tool</h4>
+                            <div class="card-tools">
+                                <button type="button" title="Minimize" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="data-source-selection-tool-body" class="card-body">
+                            <div id="data-source-1" class="row">
+                                <div class="form-group col-sm-4">
+                                    <select id="data-source-1-type" class="form-control select2"
+                                        onchange="getTableQueryList('data-source-1')" style="width: 100%">
+                                        <option value="" disabled selected>Select Type of Data Source</option>
+                                        <option value="table">Table</option>
+                                        <option value="query">Query</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <select id="data-source-1-name" class="form-control select2" style="width: 100%">
+                                        <option value="" disabled selected>Select Name of Data Source</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-1">
+                                    <button id="data-source-submit" title="Load Data" class="btn btn-block btn-success"
+                                        onclick="populateDataGrid()">
+                                        <i class="fas fa-check" style="text-align: center"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div id="data-source-selection-tool-body" class="card-body">
-                  <div id="data-source-1" class="row">
-                    <div class="form-group col-sm-4">
-                      <select
-                        id="data-source-1-type"
-                        class="form-control select2"
-                        onchange="getTableQueryList('data-source-1')"
-                        style="width: 100%"
-                      >
-                        <option value="" disabled selected>
-                          Select Type of Data Source
-                        </option>
-                        <option value="table">Table</option>
-                        <option value="query">Query</option>
-                      </select>
-                    </div>
-                    <div class="form-group col-sm-4">
-                      <select
-                        id="data-source-1-name"
-                        class="form-control select2"
-                        style="width: 100%"
-                      >
-                        <option value="" disabled selected>
-                          Select Name of Data Source
-                        </option>
-                      </select>
-                    </div>
-                    <div class="form-group col-sm-1">
-                      <button
-                        id="data-source-submit"
-                        title="Load Data"
-                        class="btn btn-block btn-success"
-                        onclick="populateDataGrid()"
-                      >
-                        <i class="fas fa-check" style="text-align: center"></i>
-                      </button>
-                    </div>
-                  </div>
+            </div>
+            <div class="row">
+                <div id="data-table-section" class="col-12">
+                    <!-- data-table card -->
                 </div>
-              </div>
+                <!-- /.col -->
             </div>
-          </div>
-          <div class="row">
-            <div id="data-table-section" class="col-12">
-              <!-- data-table card -->
-            </div>
-            <!-- /.col -->
-          </div>
-          <!-- /.row -->
+            <!-- /.row -->
         </section>
         <!-- /.content -->
-      </div>
-      <!-- /.content-wrapper -->
-      <footer class="main-footer">
-        <strong
-          >&copy; 2020 - <a href="#" target="_blank">Muneeb Shahid</a></strong
-        >
-      </footer>
-
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-      </aside>
-      <!-- /.control-sidebar -->
-
-      <!-- html templates -->
-
-      <!-- /.data-table card -->
     </div>
-    <!-- ./wrapper -->
-
-    <!-- jQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src=" {% static 'core/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <!-- DataTables -->
-    <script src=" {% static 'core/plugins/datatables/jquery.dataTables.js' %}"></script>
-    <script src=" {% static 'core/plugins/datatables-bs4/js/dataTables.bootstrap4.js' %}"></script>
-    <!-- AdminLTE App -->
-    <script src="{% static 'core/plugins/adminlte/js/adminlte.min.js' %}"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="{% static 'core/plugins/adminlte/js/demo.js' %}"></script>
-    <!-- Tabulator -->
-    <script
-      type="text/javascript"
-      src="https://unpkg.com/tabulator-tables@4.5.3/dist/js/tabulator.min.js"
-    ></script>
-    <!-- XLSX -->
-    <script
-      type="text/javascript"
-      src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"
-    ></script>
-    <!-- Select2 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/select2.full.min.js"></script>
-    <!-- Utils -->
-    <script src="{% static 'core/js/common.js' %}"></script>
-    <!-- page script -->
-    <script>
-      $(document).ready(function () {
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        <strong>&copy; 2020 - <a href="#" target="_blank">Muneeb Shahid</a></strong>
+    </footer>
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- html templates -->
+    <!-- /.data-table card -->
+</div>
+<!-- ./wrapper -->
+{% endblock %}
+{% block extra_js %}
+<!-- DataTables -->
+<script src=" {% static 'core/plugins/datatables/jquery.dataTables.js' %}"></script>
+<script src=" {% static 'core/plugins/datatables-bs4/js/dataTables.bootstrap4.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'core/plugins/adminlte/js/demo.js' %}"></script>
+<!-- Tabulator -->
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.5.3/dist/js/tabulator.min.js"></script>
+<!-- XLSX -->
+<script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+<!-- page script -->
+<script>
+    $(document).ready(function () {
         $(".select2").select2();
-      });
+    });
 
-      // array for storing properties of all the tables(Tabulator) loaded in the page.
-      var tables = [];
+    // array for storing properties of all the tables(Tabulator) loaded in the page.
+    var tables = [];
 
-      function populateDataGrid() {
+    function populateDataGrid() {
         document.getElementById("data-table-section").innerHTML = "";
         var dataGridHtml = getDataGridHTML();
         var tempLIDiv = document.createElement("div");
         tempLIDiv.innerHTML = getLoadingIndicatorHtml();
         var dataSourceSelectionTool = document.getElementById(
-          "data-source-selection-tool"
+            "data-source-selection-tool"
         );
         dataSourceSelectionTool.appendChild(tempLIDiv.firstElementChild);
         tables = [];
         //two requests are generating for first page no.
         getData().then((dataList) => {
-          var count = 1;
-          var clonedElement;
+            var count = 1;
+            var clonedElement;
 
-          dataList.forEach((data) => {
-            var tempDiv = document.createElement("div");
-            tempDiv.innerHTML = dataGridHtml;
-            clonedElement = tempDiv.querySelector("#data-table-template");
-            clonedElement.id = "data-table-" + count;
-            var clonedElementGrid = clonedElement.querySelector(
-              "#data-grid-template"
-            );
-            clonedElementGrid.id = "data-grid-" + count;
-            var clonedElementTotalRecordH =
-              clonedElement.querySelector("#total-records");
-            clonedElementTotalRecordH.id = "total-records-" + count;
-            clonedElementTotalRecordH.innerHTML =
-              "Total Records in Database: " + data["totalRecordsInDB"];
-            var clonedElementDownload = clonedElement.querySelector(
-              "#data-table-template-download"
-            );
-            clonedElementDownload.id = "data-table-" + count + "-download";
-            var clonedElementRefresh = clonedElement.querySelector(
-              "#data-table-template-clear-filter"
-            );
-            clonedElementRefresh.id = "data-table-" + count + "-clear-filter";
-            var clonedElementRecordsPerPage = clonedElement.querySelector(
-              "#data-table-template-records-per-page"
-            );
-            clonedElementRecordsPerPage.id =
-              "data-table-" + count + "-records-per-page";
-            clonedElement.querySelector("#data-table-headline").innerHTML =
-              data["name"].split("-").join(" ");
-            document
-              .getElementById("data-table-section")
-              .appendChild(tempDiv.firstElementChild);
-            var cols = [{ formatter: "rownum", align: "center", width: 40 }];
+            dataList.forEach((data) => {
+                var tempDiv = document.createElement("div");
+                tempDiv.innerHTML = dataGridHtml;
+                clonedElement = tempDiv.querySelector("#data-table-template");
+                clonedElement.id = "data-table-" + count;
+                var clonedElementGrid = clonedElement.querySelector(
+                    "#data-grid-template"
+                );
+                clonedElementGrid.id = "data-grid-" + count;
+                var clonedElementTotalRecordH =
+                    clonedElement.querySelector("#total-records");
+                clonedElementTotalRecordH.id = "total-records-" + count;
+                clonedElementTotalRecordH.innerHTML =
+                    "Total Records in Database: " + data["totalRecordsInDB"];
+                var clonedElementDownload = clonedElement.querySelector(
+                    "#data-table-template-download"
+                );
+                clonedElementDownload.id = "data-table-" + count + "-download";
+                var clonedElementRefresh = clonedElement.querySelector(
+                    "#data-table-template-clear-filter"
+                );
+                clonedElementRefresh.id = "data-table-" + count + "-clear-filter";
+                var clonedElementRecordsPerPage = clonedElement.querySelector(
+                    "#data-table-template-records-per-page"
+                );
+                clonedElementRecordsPerPage.id =
+                    "data-table-" + count + "-records-per-page";
+                clonedElement.querySelector("#data-table-headline").innerHTML =
+                    data["name"].split("-").join(" ");
+                document
+                    .getElementById("data-table-section")
+                    .appendChild(tempDiv.firstElementChild);
+                var cols = [{ formatter: "rownum", align: "center", width: 40 }];
 
-            if (data["data"].length > 0) {
-              Object.keys(data["data"][0]).forEach((colName) => {
-                var colProps = {};
-                colProps["title"] = colName;
-                colProps["field"] = colName;
-                colProps["width"] = 150;
-                if (data["numericCols"].indexOf(colName) >= 0) {
-                  colProps["headerFilter"] = minMaxFilterEditor;
-                } else if (
-                  Object.keys(data["dropdownCols"]).indexOf(colName) >= 0
-                ) {
-                  colProps["headerFilter"] = "select";
-                  colProps["headerFilterParams"] =
-                    data["dropdownCols"][colName];
-                } else {
-                  colProps["headerFilter"] = "input";
-                }
-                colProps["headerFilterLiveFilter"] = false;
-                cols.push(colProps);
-              });
-            }
-
-            var table = new Tabulator("#" + clonedElementGrid.id, {
-              layout: "fitDataStretch",
-              height: "550px",
-              autoColumns: false,
-              columns: cols,
-              //data: data["data"],
-              pagination: "remote",
-              paginationSize: 100,
-              ajaxURL: data["type"] == "table" ? "/table_data" : "/query_data",
-              ajaxParams: { dataSource: data["name"] },
-              ajaxFiltering: true,
-              selectable: true,
-              ajaxResponse: function (url, params, response) {
-                //url - the URL of the request
-                //params - the parameters passed with the request
-                //response - the JSON object returned in the body of the response.
-                clonedElement.querySelector(
-                  "#" + clonedElementTotalRecordH.id
-                ).innerHTML =
-                  "Total Records in Database: " + response["totalRecordsInDB"];
-                return response; //return the response data to tabulator
-              },
-            });
-            clonedElement.style.display = "block";
-            tables.push({
-              downloadId: clonedElementDownload.id,
-              refreshId: clonedElementRefresh.id,
-              recordsPerPageId: clonedElementRecordsPerPage.id,
-              table: table,
-              name: data["name"],
-            });
-            count++;
-          });
-          //removing loading indicator
-          dataSourceSelectionTool.removeChild(
-            dataSourceSelectionTool.lastChild
-          );
-          $(".select2").select2();
-        });
-      }
-
-      function getData() {
-        return new Promise((resolve, reject) => {
-          const dsSelectionToolElem = document.getElementById(
-            "data-source-selection-tool-body"
-          );
-          const totalDataSources = dsSelectionToolElem.children.length;
-          let totalDataReceived = 0;
-          const dataList = [];
-
-          Array.from(dsSelectionToolElem.children).forEach((dataSource) => {
-            const dataSourceTypeSelector = dataSource.querySelector(
-              `#${dataSource.id}-type`
-            );
-            const dataSourceNameSelector = dataSource.querySelector(
-              `#${dataSource.id}-name`
-            );
-            const type = dataSourceTypeSelector.value;
-            const name = dataSourceNameSelector.value;
-
-            if (type && name) {
-              const data = {
-                type,
-                name,
-                data: [],
-              };
-
-              dataList.push(data);
-
-              if (type === "table" || type === "query") {
-                const xmlhttp = new XMLHttpRequest();
-                const url = `/${type}_data?dataSource=${name}`;
-
-                xmlhttp.onload = function () {
-                  if (this.readyState === 4 && this.status === 200) {
-                    const res = JSON.parse(this.responseText);
-                    const data = dataList.find(
-                      (data) => data.type === res.type && data.name === res.name
-                    );
-
-                    Object.assign(data, {
-                      data: res.data,
-                      numericCols: res.numericCols,
-                      dropdownCols: res.dropdownCols,
+                if (data["data"].length > 0) {
+                    Object.keys(data["data"][0]).forEach((colName) => {
+                        var colProps = {};
+                        colProps["title"] = colName;
+                        colProps["field"] = colName;
+                        colProps["width"] = 150;
+                        if (data["numericCols"].indexOf(colName) >= 0) {
+                            colProps["headerFilter"] = minMaxFilterEditor;
+                        } else if (
+                            Object.keys(data["dropdownCols"]).indexOf(colName) >= 0
+                        ) {
+                            colProps["headerFilter"] = "select";
+                            colProps["headerFilterParams"] =
+                                data["dropdownCols"][colName];
+                        } else {
+                            colProps["headerFilter"] = "input";
+                        }
+                        colProps["headerFilterLiveFilter"] = false;
+                        cols.push(colProps);
                     });
+                }
 
+                var table = new Tabulator("#" + clonedElementGrid.id, {
+                    layout: "fitDataStretch",
+                    height: "550px",
+                    autoColumns: false,
+                    columns: cols,
+                    //data: data["data"],
+                    pagination: "remote",
+                    paginationSize: 100,
+                    ajaxURL: data["type"] == "table" ? "/table_data" : "/query_data",
+                    ajaxParams: { dataSource: data["name"] },
+                    ajaxFiltering: true,
+                    selectable: true,
+                    ajaxResponse: function (url, params, response) {
+                        //url - the URL of the request
+                        //params - the parameters passed with the request
+                        //response - the JSON object returned in the body of the response.
+                        clonedElement.querySelector(
+                            "#" + clonedElementTotalRecordH.id
+                        ).innerHTML =
+                            "Total Records in Database: " + response["totalRecordsInDB"];
+                        return response; //return the response data to tabulator
+                    },
+                });
+                clonedElement.style.display = "block";
+                tables.push({
+                    downloadId: clonedElementDownload.id,
+                    refreshId: clonedElementRefresh.id,
+                    recordsPerPageId: clonedElementRecordsPerPage.id,
+                    table: table,
+                    name: data["name"],
+                });
+                count++;
+            });
+            //removing loading indicator
+            dataSourceSelectionTool.removeChild(
+                dataSourceSelectionTool.lastChild
+            );
+            $(".select2").select2();
+        });
+    }
+
+    function getData() {
+        return new Promise((resolve, reject) => {
+            const dsSelectionToolElem = document.getElementById(
+                "data-source-selection-tool-body"
+            );
+            const totalDataSources = dsSelectionToolElem.children.length;
+            let totalDataReceived = 0;
+            const dataList = [];
+
+            Array.from(dsSelectionToolElem.children).forEach((dataSource) => {
+                const dataSourceTypeSelector = dataSource.querySelector(
+                    `#${dataSource.id}-type`
+                );
+                const dataSourceNameSelector = dataSource.querySelector(
+                    `#${dataSource.id}-name`
+                );
+                const type = dataSourceTypeSelector.value;
+                const name = dataSourceNameSelector.value;
+
+                if (type && name) {
+                    const data = {
+                        type,
+                        name,
+                        data: [],
+                    };
+
+                    dataList.push(data);
+
+                    if (type === "table" || type === "query") {
+                        const xmlhttp = new XMLHttpRequest();
+                        const url = `/${type}_data?dataSource=${name}`;
+
+                        xmlhttp.onload = function () {
+                            if (this.readyState === 4 && this.status === 200) {
+                                const res = JSON.parse(this.responseText);
+                                const data = dataList.find(
+                                    (data) => data.type === res.type && data.name === res.name
+                                );
+
+                                Object.assign(data, {
+                                    data: res.data,
+                                    numericCols: res.numericCols,
+                                    dropdownCols: res.dropdownCols,
+                                });
+
+                                totalDataReceived++;
+                                if (totalDataReceived === totalDataSources) {
+                                    resolve(dataList);
+                                }
+                            } else {
+                                alert("Failed to receive data from server.");
+                            }
+                        };
+
+                        xmlhttp.open("GET", url, true);
+                        xmlhttp.send();
+                    }
+                } else {
                     totalDataReceived++;
                     if (totalDataReceived === totalDataSources) {
-                      resolve(dataList);
+                        resolve(dataList);
                     }
-                  } else {
-                    alert("Failed to receive data from server.");
-                  }
-                };
-
-                xmlhttp.open("GET", url, true);
-                xmlhttp.send();
-              }
-            } else {
-              totalDataReceived++;
-              if (totalDataReceived === totalDataSources) {
-                resolve(dataList);
-              }
-            }
-          });
+                }
+            });
         });
-      }
+    }
 
-      function downloadTable(source) {
+    function downloadTable(source) {
         const { table, name } = tables.find(
-          ({ downloadId }) => downloadId === source.id
+            ({ downloadId }) => downloadId === source.id
         );
         const filename = `${name}-${table.getPage()}.csv`;
         table.download("csv", filename, { sheetName: "data" });
-      }
+    }
 
-      function clearDataHeaderFilter(source) {
+    function clearDataHeaderFilter(source) {
         const { table } = tables.find(
-          ({ refreshId }) => refreshId === source.id
+            ({ refreshId }) => refreshId === source.id
         );
         table.clearHeaderFilter();
-      }
+    }
 
-      function resetRecordsPerPage(source) {
+    function resetRecordsPerPage(source) {
         const { table } = tables.find(
-          ({ recordsPerPageId }) => recordsPerPageId === source.id
+            ({ recordsPerPageId }) => recordsPerPageId === source.id
         );
         const pageSize = document.getElementById(source.id).value;
         table.setPageSize(pageSize);
         table.clearHeaderFilter();
-      }
-    </script>
-  </body>
+    }
+</script>
+{% endblock %}
 </html>
