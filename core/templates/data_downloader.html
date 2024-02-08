@@ -6,103 +6,82 @@
 <link href="https://unpkg.com/tabulator-tables@4.5.3/dist/css/tabulator.min.css" rel="stylesheet" />
 {% endblock %}
 {% block content %}
-
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <!-- <h1>Data Table</h1> -->
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item">
-                <a href="{% url 'dashboard' %}">Home</a>
-              </li>
-              <li class="breadcrumb-item active">Data Downloader</li>
-            </ol>
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-12">
+      <div id="data-source-selection-tool" class="card">
+        <div class="card-header">
+          <h4>Data Source Selection Tool</h4>
+          <div class="card-tools">
+            <button type="button" title="Minimize" class="btn btn-tool" data-card-widget="collapse">
+              <i class="fas fa-minus"></i>
+            </button>
           </div>
         </div>
-      </div>
-      <!-- /.container-fluid -->
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-      <div class="row">
-        <div class="col-12">
-          <div id="data-source-selection-tool" class="card">
-            <div class="card-header">
-              <h4>Data Source Selection Tool</h4>
-              <div class="card-tools">
-                <button type="button" title="Minimize" class="btn btn-tool" data-card-widget="collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
-              </div>
+        <div id="data-source-selection-tool-body" class="card-body">
+          <div id="data-source-1" class="row">
+            <div class="form-group col-sm-4">
+              <select id="data-source-1-type" class="form-control select2" onchange="getTableQueryList('data-source-1')"
+                style="width: 100%">
+                <option value="" disabled selected>
+                  Select Type of Data Source
+                </option>
+                <option value="table">Table</option>
+                <option value="query">Query</option>
+              </select>
             </div>
-            <div id="data-source-selection-tool-body" class="card-body">
-              <div id="data-source-1" class="row">
-                <div class="form-group col-sm-4">
-                  <select id="data-source-1-type" class="form-control select2"
-                    onchange="getTableQueryList('data-source-1')" style="width: 100%">
-                    <option value="" disabled selected>
-                      Select Type of Data Source
-                    </option>
-                    <option value="table">Table</option>
-                    <option value="query">Query</option>
-                  </select>
-                </div>
-                <div class="form-group col-sm-4">
-                  <select id="data-source-1-name" class="form-control select2" style="width: 100%">
-                    <option value="" disabled selected>
-                      Select Name of Data Source
-                    </option>
-                  </select>
-                </div>
-                <div class="form-group col-sm-1">
-                  <button id="data-source-submit" title="Load Data" class="btn btn-block btn-success"
-                    onclick="populateDataGrid()">
-                    <i class="fas fa-check" style="text-align: center"> </i>
-                  </button>
-                </div>
-              </div>
+            <div class="form-group col-sm-4">
+              <select id="data-source-1-name" class="form-control select2" style="width: 100%">
+                <option value="" disabled selected>
+                  Select Name of Data Source
+                </option>
+              </select>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div id="data-table-section" class="col-12">
-          <!-- data-table card -->
-        </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
-      <div class="modal fade" id="info-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 id="title" class="modal-title" id="exampleModalLabel"></h5>
-              <button type="button" class="close" title="Close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div id="body" class="modal-body">
-              <p id="body-text"></p>
-            </div>
-            <div class="modal-footer">
-              <button id="close" type="button" class="btn btn-secondary" data-dismiss="modal">
-                Close
-              </button>
-              <button id="ok" type="button" class="btn btn-primary" data-dismiss="modal">
-                Continue
+            <div class="form-group col-sm-1">
+              <button id="data-source-submit" title="Load Data" class="btn btn-block btn-success"
+                onclick="populateDataGrid()">
+                <i class="fas fa-check" style="text-align: center"> </i>
               </button>
             </div>
           </div>
         </div>
       </div>
-    </section>
-    <!-- /.content -->
+    </div>
+  </div>
+  <div class="row">
+    <div id="data-table-section" class="col-12">
+      <!-- data-table card -->
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+  <div class="modal fade" id="info-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 id="title" class="modal-title" id="exampleModalLabel"></h5>
+          <button type="button" class="close" title="Close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="body" class="modal-body">
+          <p id="body-text"></p>
+        </div>
+        <div class="modal-footer">
+          <button id="close" type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button id="ok" type="button" class="btn btn-primary" data-dismiss="modal">
+            Continue
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /.content -->
 {% endblock %}
 {% block extra_js %}
 <!-- DataTables -->
@@ -417,4 +396,5 @@
   }
 </script>
 {% endblock %}
+
 </html>
