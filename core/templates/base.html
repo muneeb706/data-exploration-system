@@ -23,7 +23,11 @@
     <div class="wrapper">
         {% include "navbar.html" %}
         {% include "sidebar.html" %}
-        {% block content %}{% endblock %}
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+        {% include "footer.html" %}
     </div>
 </body>
 <!-- jQuery -->
