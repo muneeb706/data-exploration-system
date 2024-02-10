@@ -7,9 +7,9 @@ describe("Login", function () {
     cy.url().should("include", "/dashboard");
   });
 
-  it('shows an error when logging in with an invalid password', function() {
+  it("shows an error when logging in with an invalid password", function () {
     cy.login(true);
     // The page should display an error message
-    cy.contains('Invalid username or password.')
-  })
+    cy.contains("Invalid username or password.");
+  });
 });

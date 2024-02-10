@@ -5,15 +5,16 @@ describe("Data Downloader", function () {
     cy.login();
 
     // Visit the data downloader page
-    cy.visit("/data_downloader");
+    cy.visit("/data_explorer");
   });
 
   it("loads correctly", function () {
     // Check that the Data Explorer link has the active class
     cy.get("a.nav-link")
-      .contains("Data Downloader")
+      .contains("Data Explorer")
       .parent()
       .should("have.class", "active");
+
     // The page should contain a data source type dropdown
     cy.get("#data-source-1-type").should("exist");
 

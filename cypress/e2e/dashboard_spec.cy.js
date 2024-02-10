@@ -35,7 +35,9 @@ describe("Dashboard", function () {
     cy.get("#element-select")
       .find("option")
       .eq(3)
-      .then((element) => cy.get("#element-select").select(element.val(), {force: true}));
+      .then((element) =>
+        cy.get("#element-select").select(element.val(), { force: true })
+      );
 
     // Apply the selection
     cy.get("#chart-submit").click();
