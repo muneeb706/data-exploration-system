@@ -5,6 +5,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.views.generic.base import RedirectView
+
 
 from django.urls import path
 
@@ -40,6 +42,7 @@ urlpatterns = [
     path("table_data/", table_data_view, name="table_data"),
     path("query_data/", query_data_view, name="query_data"),
     path("create_test_user/", create_test_user_view, name="create_test_user"),
+    path("", RedirectView.as_view(url="/login", permanent=True)),
 ]
 
 if settings.DEBUG:
