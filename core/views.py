@@ -180,12 +180,12 @@ def demo_data(request, data_type):
 
 @csrf_exempt
 def create_test_user_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         data = json.loads(request.body)
 
-        username = data.get('username', 'testuser')
-        email = data.get('email', 'testuser@example.com')
-        password = data.get('password', 'testpassword')
+        username = data.get("username", "testuser")
+        email = data.get("email", "testuser@example.com")
+        password = data.get("password", "testpassword")
 
         # Delete the test user if it already exists
         User.objects.filter(username=username).delete()
@@ -193,6 +193,6 @@ def create_test_user_view(request):
         # Create the test user
         User.objects.create_user(username, email, password)
 
-        return JsonResponse({'status': 'success'})
+        return JsonResponse({"status": "success"})
 
-    return JsonResponse({'status': 'invalid request'}, status=400)
+    return JsonResponse({"status": "invalid request"}, status=400)
