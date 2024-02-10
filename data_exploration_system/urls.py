@@ -20,6 +20,7 @@ from core.views import (
     query_list,
     table_data_view,
     query_data_view,
+    create_test_user_view,
 )
 
 urlpatterns = [
@@ -34,11 +35,11 @@ urlpatterns = [
     path(
         "element_timeline_data/", elemenet_timeline_data, name="element_timeline_data"
     ),
-    path('table_list/', table_list, name='table_list'),
-    path('query_list/', query_list, name='query_list'),
-
-    path('table_data/', table_data_view, name='table_data'),
-    path('query_data/', query_data_view, name='query_data'),
+    path("table_list/", table_list, name="table_list"),
+    path("query_list/", query_list, name="query_list"),
+    path("table_data/", table_data_view, name="table_data"),
+    path("query_data/", query_data_view, name="query_data"),
+    path("create_test_user/", create_test_user_view, name="create_test_user"),
 ]
 
 if settings.DEBUG:

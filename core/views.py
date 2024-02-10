@@ -2,12 +2,14 @@ import json
 import math
 import random
 import csv
-from urllib.parse import unquote
 
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+
 
 from core.forms import LoginForm
 
@@ -174,3 +176,23 @@ def demo_data(request, data_type):
             ]
         },
     }
+
+
+@csrf_exempt
+def create_test_user_view(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        username = data.get('username', 'testuser')
+        email = data.get('email', 'testuser@example.com')
+        password = data.get('password', 'testpassword')
+
+        # Delete the test user if it already exists
+        User.objects.filter(username=username).delete()
+
+        # Create the test user
+        User.objects.create_user(username, email, password)
+
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'invalid request'}, status=400)

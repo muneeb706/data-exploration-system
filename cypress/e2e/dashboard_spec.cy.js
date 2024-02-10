@@ -1,13 +1,7 @@
 describe("Dashboard", function () {
   beforeEach(function () {
     // Visit the dashboard page before each test
-    cy.visit("/login");
-    // Find the email input field, type in a valid email address
-    cy.get("input[name=username]").type("muneeb706");
-    // Find the password input field, type in a valid password
-    cy.get("input[name=password]").type("1234ABCDe");
-    // Find the login form and submit it
-    cy.get("form").submit();
+    cy.login();
   });
 
   it("loads correctly", function () {
