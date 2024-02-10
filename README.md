@@ -17,7 +17,7 @@ Client Side code is written in Vanilla JavaScript with HTML and CSS and, server 
     ```
     Navigate to ```localhost:8000/login``` in web browser.
 
-4. You need to create a user in the system to login. You can create user either by using [create_test_user](https://github.com/muneeb706/data-exploration-system/blob/master/data_exploration_system/urls.py#L42) API or you can use superuser (```python manage.py createsuperuser```)
+4. You need to create a user in the system to login. You can create user either by using [create_test_user](https://github.com/muneeb706/data-exploration-system/blob/master/data_exploration_system/urls.py#L44) API or you can use superuser (```python manage.py createsuperuser```)
 
 ## How to run tests (end to end)
 
