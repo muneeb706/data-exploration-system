@@ -1,0 +1,400 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Data Exploration System | Data Downloader{% endblock %}
+{% block extra_css %}
+<!-- Tabulator -->
+<link href="https://unpkg.com/tabulator-tables@4.5.3/dist/css/tabulator.min.css" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-12">
+      <div id="data-source-selection-tool" class="card">
+        <div class="card-header">
+          <h4>Data Source Selection Tool</h4>
+          <div class="card-tools">
+            <button type="button" title="Minimize" class="btn btn-tool" data-card-widget="collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+        <div id="data-source-selection-tool-body" class="card-body">
+          <div id="data-source-1" class="row">
+            <div class="form-group col-sm-4">
+              <select id="data-source-1-type" class="form-control select2" onchange="getTableQueryList('data-source-1')"
+                style="width: 100%">
+                <option value="" disabled selected>
+                  Select Type of Data Source
+                </option>
+                <option value="table">Table</option>
+                <option value="query">Query</option>
+              </select>
+            </div>
+            <div class="form-group col-sm-4">
+              <select id="data-source-1-name" class="form-control select2" style="width: 100%">
+                <option value="" disabled selected>
+                  Select Name of Data Source
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm-1">
+              <button id="data-source-submit" title="Load Data" class="btn btn-block btn-success"
+                onclick="populateDataGrid()">
+                <i class="fas fa-check" style="text-align: center"> </i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div id="data-table-section" class="col-12">
+      <!-- data-table card -->
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+  <div class="modal fade" id="info-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 id="title" class="modal-title" id="exampleModalLabel"></h5>
+          <button type="button" class="close" title="Close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="body" class="modal-body">
+          <p id="body-text"></p>
+        </div>
+        <div class="modal-footer">
+          <button id="close" type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button id="ok" type="button" class="btn btn-primary" data-dismiss="modal">
+            Continue
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+{% endblock %}
+{% block extra_js %}
+<!-- DataTables -->
+<script src=" {% static 'core/plugins/datatables/jquery.dataTables.js' %}"></script>
+<script src=" {% static 'core/plugins/datatables-bs4/js/dataTables.bootstrap4.js' %}"></script>
+
+<!-- Tabulator -->
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.5.3/dist/js/tabulator.min.js"></script>
+<!-- XLSX -->
+<script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+<!-- Custom JS -->
+<script src="{% static 'core/plugins/js/circular-progress.js' %}"></script>
+<script src="{% static 'core/plugins/js/download.js' %}"></script>
+<!-- page script -->
+<script>
+  // initializing select2 elements (dropdown)
+  $(document).ready(function () {
+    $(".select2").select2();
+  });
+
+  // initializing circular progress indicator
+  progress = new CircularProgress({
+    radius: 100,
+    strokeStyle: "blue",
+    lineCap: "square",
+    lineJoin: "round",
+    lineWidth: 10,
+    shadowBlur: 0,
+    shadowColor: "yellow",
+    text: {
+      font: "bold 30px arial",
+      shadowBlur: 0,
+    },
+    initial: {
+      strokeStyle: "white",
+      lineCap: "square",
+      lineJoin: "round",
+      lineWidth: 10,
+      shadowBlur: 10,
+      shadowColor: "black",
+    },
+  });
+
+  // array for storing properties of all the tables(Tabulator) loaded in the page.
+  var tables = [];
+
+  async function populateDataGrid() {
+    document.getElementById("data-table-section").innerHTML = "";
+    const dataGridHtml = getDataGridHTML();
+    const tempLIDiv = document.createElement("div");
+    tempLIDiv.innerHTML = getLoadingIndicatorHtml();
+    const dataSourceSelectionTool = document.getElementById(
+      "data-source-selection-tool"
+    );
+    dataSourceSelectionTool.appendChild(tempLIDiv.firstElementChild);
+    tables = [];
+    const chunk = 100;
+    const dsSelectionToolElem = document.getElementById(
+      "data-source-selection-tool-body"
+    );
+    const dataSource = dsSelectionToolElem.children[0];
+    const dataSourceTypeSelector = dataSource.querySelector(
+      `#${dataSource.id}-type`
+    );
+    const dataSourceNameSelector = dataSource.querySelector(
+      `#${dataSource.id}-name`
+    );
+    const type = dataSourceTypeSelector.value;
+    const name = dataSourceNameSelector.value;
+
+    const dataList = await getData(chunk, type, name);
+    dataList.forEach((data, index) => {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = dataGridHtml;
+      const clonedElement = tempDiv.querySelector("#data-table-template");
+      const count = index + 1;
+      clonedElement.id = `data-table-${count}`;
+      const clonedElementGrid = clonedElement.querySelector(
+        "#data-grid-template"
+      );
+      clonedElementGrid.id = `data-grid-${count}`;
+      const clonedElementTotalRecordH =
+        clonedElement.querySelector("#total-records");
+      clonedElementTotalRecordH.id = `total-records-${count}`;
+      clonedElementTotalRecordH.innerHTML = `Total Records in Database: ${data.totalRecordsInDB}`;
+      const clonedElementDownload = clonedElement.querySelector(
+        "#data-table-template-download"
+      );
+      clonedElementDownload.id = `data-table-${count}-download`;
+      const clonedElementRefresh = clonedElement.querySelector(
+        "#data-table-template-clear-filter"
+      );
+      clonedElementRefresh.id = `data-table-${count}clear-filter`;
+      const clonedElementRecordsPerPage = clonedElement.querySelector(
+        "#data-table-template-records-per-page"
+      );
+      clonedElementRecordsPerPage.id = `data-table-${count}-records-per-page`;
+      clonedElement.querySelector("#data-table-headline").innerHTML =
+        data.name.split("-").join(" ");
+      document
+        .getElementById("data-table-section")
+        .appendChild(tempDiv.firstElementChild);
+      const cols = [{ formatter: "rownum", align: "center", width: 40 }];
+
+      if (data.data.length > 0) {
+        Object.keys(data.data[0]).forEach((colName) => {
+          const colProps = {
+            title: colName,
+            field: colName,
+            width: 150,
+            headerFilter: data.numericCols.includes(colName)
+              ? minMaxFilterEditor
+              : Object.keys(data.dropdownCols).includes(colName)
+                ? "select"
+                : "input",
+            headerFilterLiveFilter: false,
+          };
+          if (colProps.headerFilter === "select") {
+            colProps.headerFilterParams = data.dropdownCols[colName];
+          }
+          cols.push(colProps);
+        });
+      }
+
+      const table = new Tabulator(`#${clonedElementGrid.id}`, {
+        layout: "fitDataStretch",
+        height: "550px",
+        autoColumns: false,
+        columns: cols,
+        pagination: "remote",
+        paginationSize: chunk,
+        ajaxURL: data.type === "table" ? "/table_data" : "/query_data",
+        ajaxParams: { request: "data", dataSource: data.name },
+        ajaxFiltering: true,
+        selectable: true,
+        ajaxResponse: function (url, params, response) {
+          clonedElement.querySelector(
+            `#${clonedElementTotalRecordH.id}`
+          ).innerHTML = `Total Records in Database: ${response.totalRecordsInDB}`;
+          return response;
+        },
+      });
+
+      clonedElement.style.display = "block";
+
+      tables.push({
+        tableId: clonedElement.id,
+        gridId: clonedElementGrid.id,
+        downloadId: clonedElementDownload.id,
+        recordsPerPageId: clonedElementRecordsPerPage.id,
+        refreshId: clonedElementRefresh.id,
+        table: table,
+        type: data.type,
+        name: data.name,
+      });
+    });
+
+    dataSourceSelectionTool.removeChild(dataSourceSelectionTool.lastChild);
+    $(".select2").select2();
+  }
+
+  function getData(chunk, type, name) {
+    return new Promise((resolve, reject) => {
+      let totalDataReceived = 0;
+      let dataList = [];
+      let totalRecordsInDB = 0;
+      let data = {};
+
+      if (type && name) {
+        data = {
+          type,
+          name,
+          data: [],
+        };
+
+        sendRequest(0);
+
+        function sendRequest(i) {
+          const xmlhttp = new XMLHttpRequest();
+          const url = `/${type}_data?dataSource=${name}&page=${i + 1
+            }&size=${chunk}`;
+
+          xmlhttp.onload = function () {
+            if (this.readyState === 4 && this.status === 200) {
+              const res = JSON.parse(this.responseText);
+              totalRecordsInDB = res.totalRecordsInDB;
+              const partitions = Math.ceil(totalRecordsInDB / chunk);
+              data.data = [...data.data, ...res.data];
+              data.numericCols = res.numericCols;
+              data.dropdownCols = res.dropdownCols;
+              data.totalRecordsInDB = totalRecordsInDB;
+              totalDataReceived += res.data.length;
+              dataList.push(data);
+              resolve(dataList);
+            } else {
+              alert("Failed to receive data from server.");
+            }
+          };
+
+          xmlhttp.open("GET", url, true);
+          xmlhttp.send();
+        }
+      } else {
+        resolve(dataList);
+      }
+    });
+  }
+  // worker for downloading the data
+  var worker = new Worker("{% static 'core/js/worker.js' %}", {
+    type: "module",
+  });
+
+  function downloadTable(source) {
+    let continueDownload = false;
+    const table = tables.find(({ downloadId }) => downloadId === source.id);
+    const infoModalElem = document.getElementById("info-modal");
+    infoModalElem.querySelector("#title").innerHTML =
+      "Data Download Confirmation";
+    infoModalElem.querySelector(
+      "#body-text"
+    ).innerHTML = `<span style="color:red;font-weight:bold">Note: </span>If total records are greater than <b>100K</b> then first <b>100K</b> records will be downloaded. Use of filters is recommended.`;
+    const modalOkEvent = infoModalElem.querySelector("#ok");
+
+    modalOkEvent.onclick = function () {
+      const tempLIDiv = document.createElement("div");
+      tempLIDiv.className = "overlay";
+      tempLIDiv.id = "loading-indicator";
+      progress.update(0);
+      tempLIDiv.appendChild(progress.el);
+
+      const cancelButton = document.createElement("div");
+      cancelButton.innerHTML =
+        '<button id="cancel-download" title="Cancel Download" class="btn btn-block btn-danger">Cancel</button>';
+      cancelButton.addEventListener(
+        "click",
+        function () {
+          worker.postMessage(["stop"]);
+          removeChildById(table.tableId);
+          removeChildById("data-source-selection-tool");
+        },
+        false
+      );
+
+      tempLIDiv.appendChild(document.createElement("br"));
+      tempLIDiv.appendChild(cancelButton);
+      appendChildById(table.tableId, tempLIDiv);
+      appendChildById("data-source-selection-tool", createOverlay());
+
+      continueDownload = true;
+    };
+
+    $("#info-modal").on("hidden.bs.modal", function () {
+      if (continueDownload) {
+        continueDownload = false;
+        worker.postMessage([
+          "start",
+          table.type,
+          table.name,
+          5000,
+          100000,
+          table.table.getHeaderFilters(),
+        ]);
+        worker.onmessage = function (e) {
+          if (e.data.type === "progress") {
+            progress.update(e.data.progress);
+          } else if (e.data.type === "data") {
+            download(e.data.data, `${e.data.fileName}.csv`, "text/csv");
+            removeChildById(table.tableId);
+            removeChildById("data-source-selection-tool");
+          }
+        };
+      }
+    });
+
+    $("#info-modal").modal({ keyboard: false });
+  }
+
+  function appendChildById(id, child) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.appendChild(child);
+    }
+  }
+
+  function removeChildById(id) {
+    const element = document.getElementById(id);
+    if (element && element.lastChild) {
+      element.removeChild(element.lastChild);
+    }
+  }
+
+  function createOverlay() {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    return overlay;
+  }
+
+  function clearDataHeaderFilter(source) {
+    const { table } = tables.find(
+      ({ refreshId }) => refreshId === source.id
+    );
+    table.clearHeaderFilter();
+  }
+
+  function resetRecordsPerPage(source) {
+    const { table } = tables.find(
+      ({ recordsPerPageId }) => recordsPerPageId === source.id
+    );
+    const pageSize = document.getElementById(source.id).value;
+    table.setPageSize(pageSize);
+    table.clearHeaderFilter();
+  }
+</script>
+{% endblock %}
+
+</html>

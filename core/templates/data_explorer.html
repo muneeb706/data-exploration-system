@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Data Exploration System | Data Explorer{% endblock %}
+{% block extra_css %}
+<!-- Tabulator -->
+<link href="https://unpkg.com/tabulator-tables@4.5.3/dist/css/tabulator.min.css" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div id="data-source-selection-tool" class="card">
+                <div class="card-header">
+                    <h4>Data Source Selection Tool</h4>
+                    <div class="card-tools">
+                        <button type="button" title="Minimize" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="data-source-selection-tool-body" class="card-body">
+                    <div id="data-source-1" class="row">
+                        <div class="form-group col-sm-4">
+                            <select id="data-source-1-type" class="form-control select2"
+                                onchange="getTableQueryList('data-source-1')" style="width: 100%">
+                                <option value="" disabled selected>Select Type of Data Source</option>
+                                <option value="table">Table</option>
+                                <option value="query">Query</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <select id="data-source-1-name" class="form-control select2" style="width: 100%">
+                                <option value="" disabled selected>Select Name of Data Source</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-1">
+                            <button id="data-source-submit" title="Load Data" class="btn btn-block btn-success"
+                                onclick="populateDataGrid()">
+                                <i class="fas fa-check" style="text-align: center"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div id="data-table-section" class="col-12">
+            <!-- data-table card -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+{% endblock %}
+{% block extra_js %}
+<!-- DataTables -->
+<script src=" {% static 'core/plugins/datatables/jquery.dataTables.js' %}"></script>
+<script src=" {% static 'core/plugins/datatables-bs4/js/dataTables.bootstrap4.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'core/plugins/adminlte/js/demo.js' %}"></script>
+<!-- Tabulator -->
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.5.3/dist/js/tabulator.min.js"></script>
+<!-- XLSX -->
+<script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+<!-- page script -->
+<script>
+    $(document).ready(function () {
+        $(".select2").select2();
+    });
+
+    // array for storing properties of all the tables(Tabulator) loaded in the page.
+    var tables = [];
+
+    function populateDataGrid() {
+        document.getElementById("data-table-section").innerHTML = "";
+        var dataGridHtml = getDataGridHTML();
+        var tempLIDiv = document.createElement("div");
+        tempLIDiv.innerHTML = getLoadingIndicatorHtml();
+        var dataSourceSelectionTool = document.getElementById(
+            "data-source-selection-tool"
+        );
+        dataSourceSelectionTool.appendChild(tempLIDiv.firstElementChild);
+        tables = [];
+        //two requests are generating for first page no.
+        getData().then((dataList) => {
+            var count = 1;
+            var clonedElement;
+
+            dataList.forEach((data) => {
+                var tempDiv = document.createElement("div");
+                tempDiv.innerHTML = dataGridHtml;
+                clonedElement = tempDiv.querySelector("#data-table-template");
+                clonedElement.id = "data-table-" + count;
+                var clonedElementGrid = clonedElement.querySelector(
+                    "#data-grid-template"
+                );
+                clonedElementGrid.id = "data-grid-" + count;
+                var clonedElementTotalRecordH =
+                    clonedElement.querySelector("#total-records");
+                clonedElementTotalRecordH.id = "total-records-" + count;
+                clonedElementTotalRecordH.innerHTML =
+                    "Total Records in Database: " + data["totalRecordsInDB"];
+                var clonedElementDownload = clonedElement.querySelector(
+                    "#data-table-template-download"
+                );
+                clonedElementDownload.id = "data-table-" + count + "-download";
+                var clonedElementRefresh = clonedElement.querySelector(
+                    "#data-table-template-clear-filter"
+                );
+                clonedElementRefresh.id = "data-table-" + count + "-clear-filter";
+                var clonedElementRecordsPerPage = clonedElement.querySelector(
+                    "#data-table-template-records-per-page"
+                );
+                clonedElementRecordsPerPage.id =
+                    "data-table-" + count + "-records-per-page";
+                clonedElement.querySelector("#data-table-headline").innerHTML =
+                    data["name"].split("-").join(" ");
+                document
+                    .getElementById("data-table-section")
+                    .appendChild(tempDiv.firstElementChild);
+                var cols = [{ formatter: "rownum", align: "center", width: 40 }];
+
+                if (data["data"].length > 0) {
+                    Object.keys(data["data"][0]).forEach((colName) => {
+                        var colProps = {};
+                        colProps["title"] = colName;
+                        colProps["field"] = colName;
+                        colProps["width"] = 150;
+                        if (data["numericCols"].indexOf(colName) >= 0) {
+                            colProps["headerFilter"] = minMaxFilterEditor;
+                        } else if (
+                            Object.keys(data["dropdownCols"]).indexOf(colName) >= 0
+                        ) {
+                            colProps["headerFilter"] = "select";
+                            colProps["headerFilterParams"] =
+                                data["dropdownCols"][colName];
+                        } else {
+                            colProps["headerFilter"] = "input";
+                        }
+                        colProps["headerFilterLiveFilter"] = false;
+                        cols.push(colProps);
+                    });
+                }
+
+                var table = new Tabulator("#" + clonedElementGrid.id, {
+                    layout: "fitDataStretch",
+                    height: "550px",
+                    autoColumns: false,
+                    columns: cols,
+                    //data: data["data"],
+                    pagination: "remote",
+                    paginationSize: 100,
+                    ajaxURL: data["type"] == "table" ? "/table_data" : "/query_data",
+                    ajaxParams: { dataSource: data["name"] },
+                    ajaxFiltering: true,
+                    selectable: true,
+                    ajaxResponse: function (url, params, response) {
+                        //url - the URL of the request
+                        //params - the parameters passed with the request
+                        //response - the JSON object returned in the body of the response.
+                        clonedElement.querySelector(
+                            "#" + clonedElementTotalRecordH.id
+                        ).innerHTML =
+                            "Total Records in Database: " + response["totalRecordsInDB"];
+                        return response; //return the response data to tabulator
+                    },
+                });
+                clonedElement.style.display = "block";
+                tables.push({
+                    downloadId: clonedElementDownload.id,
+                    refreshId: clonedElementRefresh.id,
+                    recordsPerPageId: clonedElementRecordsPerPage.id,
+                    table: table,
+                    name: data["name"],
+                });
+                count++;
+            });
+            //removing loading indicator
+            dataSourceSelectionTool.removeChild(
+                dataSourceSelectionTool.lastChild
+            );
+            $(".select2").select2();
+        });
+    }
+
+    function getData() {
+        return new Promise((resolve, reject) => {
+            const dsSelectionToolElem = document.getElementById(
+                "data-source-selection-tool-body"
+            );
+            const totalDataSources = dsSelectionToolElem.children.length;
+            let totalDataReceived = 0;
+            const dataList = [];
+
+            Array.from(dsSelectionToolElem.children).forEach((dataSource) => {
+                const dataSourceTypeSelector = dataSource.querySelector(
+                    `#${dataSource.id}-type`
+                );
+                const dataSourceNameSelector = dataSource.querySelector(
+                    `#${dataSource.id}-name`
+                );
+                const type = dataSourceTypeSelector.value;
+                const name = dataSourceNameSelector.value;
+
+                if (type && name) {
+                    const data = {
+                        type,
+                        name,
+                        data: [],
+                    };
+
+                    dataList.push(data);
+
+                    if (type === "table" || type === "query") {
+                        const xmlhttp = new XMLHttpRequest();
+                        const url = `/${type}_data?dataSource=${name}`;
+
+                        xmlhttp.onload = function () {
+                            if (this.readyState === 4 && this.status === 200) {
+                                const res = JSON.parse(this.responseText);
+                                const data = dataList.find(
+                                    (data) => data.type === res.type && data.name === res.name
+                                );
+
+                                Object.assign(data, {
+                                    data: res.data,
+                                    numericCols: res.numericCols,
+                                    dropdownCols: res.dropdownCols,
+                                });
+
+                                totalDataReceived++;
+                                if (totalDataReceived === totalDataSources) {
+                                    resolve(dataList);
+                                }
+                            } else {
+                                alert("Failed to receive data from server.");
+                            }
+                        };
+
+                        xmlhttp.open("GET", url, true);
+                        xmlhttp.send();
+                    }
+                } else {
+                    totalDataReceived++;
+                    if (totalDataReceived === totalDataSources) {
+                        resolve(dataList);
+                    }
+                }
+            });
+        });
+    }
+
+    function downloadTable(source) {
+        const { table, name } = tables.find(
+            ({ downloadId }) => downloadId === source.id
+        );
+        const filename = `${name}-${table.getPage()}.csv`;
+        table.download("csv", filename, { sheetName: "data" });
+    }
+
+    function clearDataHeaderFilter(source) {
+        const { table } = tables.find(
+            ({ refreshId }) => refreshId === source.id
+        );
+        table.clearHeaderFilter();
+    }
+
+    function resetRecordsPerPage(source) {
+        const { table } = tables.find(
+            ({ recordsPerPageId }) => recordsPerPageId === source.id
+        );
+        const pageSize = document.getElementById(source.id).value;
+        table.setPageSize(pageSize);
+        table.clearHeaderFilter();
+    }
+</script>
+{% endblock %}
+
+</html>

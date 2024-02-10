@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Data Exploration System | Log In</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="{% static 'core/plugins/fontawesome-free/css/all.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'core/plugins/adminlte/css/adminlte.min.css' %}"
+    />
+  </head>
+
+  <body class="hold-transition login-page">
+    <div class="login-box">
+      <div style="text-align: center; margin-bottom: 50px">
+        <a href="#" class="text-center" target="_blank">
+          <img
+            src="{% static 'core/img/logo.png' %}"
+            alt="Data Exploration System Logo"
+            class="profile-user-img img-responsive img-circle"
+          />
+        </a>
+        <h2 class="text-center mt-2">Data Exploration System</h2>
+      </div>
+      <div class="card">
+        <div class="card-body login-card-body">
+          <!-- <p class="login-box-msg"><b>Log in</b></p> -->
+          <form action="{% url 'login' %}" method="post">
+            {% csrf_token %} {% if form.errors %}
+            <div
+              id="login-failed-alert"
+              class="alert alert-danger alert-dismissible"
+            >
+              Invalid username or password.
+            </div>
+            {% endif %}
+            <div id="username-group" class="input-group mb-3">
+              <label for="{{ form.username.id_for_label }}" class="sr-only"
+                >Username</label
+              >
+              {{ form.username }}
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-user"></span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <label for="{{ form.password.id_for_label }}" class="sr-only"
+                >Password</label
+              >
+              {{ form.password }}
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <button
+                  type="submit"
+                  name="login"
+                  value="Log In"
+                  class="btn btn-primary btn-block"
+                  aria-label="Log In"
+                >
+                  Log In
+                </button>
+              </div>
+              <!-- /.col -->
+            </div>
+          </form>
+        </div>
+        <!-- /.login-card-body -->
+      </div>
+    </div>
+    <!-- /.login-box -->
+    <footer>
+      <strong
+        >&copy; 2020 - <a href="#" target="_blank">Muneeb Shahid</a></strong
+      >
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Data Exploration System | Dashboard{% endblock %}
+{% block extra_css %}
+<link
+  href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css"
+  rel="stylesheet" />
+{% endblock %}
+{% block content %}
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div id="entity1-count" class="small-box bg-info">
+          <div id="entity1" class="inner">
+            <h3>150</h3>
+            <p>Entity - 1</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-waterdrop"></i>
+          </div>
+          <!--<a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>-->
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div id="entity2-count" class="small-box bg-success">
+          <div class="inner">
+            <h3>53</h3>
+            <p>Entity - 2</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-beaker"></i>
+          </div>
+          <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div id="entity3-count" class="small-box bg-warning">
+          <div class="inner">
+            <h3>44</h3>
+            <p>Entity - 3</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-gear-b"></i>
+          </div>
+          <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div id="entity4-count" class="small-box bg-danger">
+          <div class="inner">
+            <h3>65</h3>
+            <p>Entity - 4</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-erlenmeyer-flask"></i>
+          </div>
+          <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+        </div>
+      </div>
+      <!-- ./col -->
+    </div>
+    <!-- /.row -->
+    <!-- Main row -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card" id="entity5Viz">
+          <div class="card-header">
+            <h5 class="card-title">Entity - 5 Line Graph</h5>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="chart">
+                  <!-- Sales Chart Canvas -->
+                  <canvas id="entity5Chart" height="180" style="height: 180px;"></canvas>
+                </div>
+                <!-- /.chart-responsive -->
+              </div>
+              <!-- /.col -->
+              <div class="form-group col-md-4">
+                <!-- <p class="text-center">
+                        <strong>Goal Completion</strong>
+                      </p>-->
+                <label>Select Year Range</label>
+                <div class="form-group input-group input-daterange" id="year-range">
+                  <input id="year-from" type="text" class="form-control" value="1990">
+                  <div class="input-group-text">to</div>
+                  <input id="year-to" type="text" class="form-control" value="2000">
+                </div>
+                <div class="form-group">
+                  <label>Select Element</label>
+                  <select id="element-select" class="form-control select2" data-placeholder="Select Element"
+                    style="width: 100%"></select>
+                </div>
+                <div class="form-group">
+                  <button id="chart-submit" title="Load Data" class="btn btn-block btn-success"
+                    onclick="loadChartData()">Apply</button>
+                </div>
+              </div>
+              <!-- /.col -->
+            </div>
+            <!-- /.row -->
+          </div>
+          <!-- ./card-body -->
+          <div class="card-footer">
+            <!-- /.card-footer -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row (main row) -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+{% endblock %}
+{% block extra_js %}
+<!-- OPTIONAL SCRIPTS -->
+<script src="{% static 'core/plugins/adminlte/js/demo.js' %}"></script>
+<script
+  src="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<script src="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- ChartJS -->
+<script src="{% static 'core/plugins/chart.js/Chart.min.js' %}"></script>
+<!-- Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.12/js/select2.full.min.js"></script>
+<!-- page script -->
+<script>
+  $(document).ready(function () {
+    initializeSelect2Elements();
+    initializeDatepickers();
+    loadDashboardData();
+  });
+
+  const defaultElementCode = "Element1";
+
+  function initializeSelect2Elements() {
+    $(".select2").select2();
+  }
+
+  function initializeDatepickers() {
+    $("#year-range input").each(function () {
+      $(this).datepicker({
+        autoclose: true,
+        format: " yyyy",
+        viewMode: "years",
+        minViewMode: "years",
+      });
+    });
+  }
+
+  function loadDashboardData() {
+    loadCounts();
+    loadElement();
+    loadChartData(true);
+  }
+
+  function loadCounts() {
+    loadEntityCount("entity1-count", "/entity_count?dataSource=ENTITY1");
+    loadEntityCount("entity2-count", "/entity_count?dataSource=ENTITY2");
+    loadEntityCount("entity3-count", "/entity_count?dataSource=ENTITY3");
+    loadEntityCount("entity4-count", "/entity_count?dataSource=ENTITY4");
+  }
+
+  function loadEntityCount(elementId, url) {
+    const tempLIDiv = document.createElement("div");
+    tempLIDiv.innerHTML = getLoadingIndicatorHtml();
+
+    const entityCountBox = document.getElementById(elementId);
+    entityCountBox.appendChild(tempLIDiv.firstElementChild);
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to get ${elementId} from server.`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        entityCountBox.querySelector("h3").innerHTML = data["totalRecordsInDB"];
+        entityCountBox.removeChild(entityCountBox.lastChild);
+      })
+      .catch(error => {
+        alert(error.message);
+      });
+  }
+
+  function loadElement() {
+    const elementSelect = document.getElementById("element-select");
+    const url = "/element_list";
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        elementSelect.innerHTML = '<option value="" disabled>Select Element</option>';
+
+        data["data"].forEach((element, index) => {
+          const option = document.createElement("option");
+          option.value = element["DESCRIPTION"];
+          option.text = element["DESCRIPTION"];
+
+          if (element["DESCRIPTION"] === defaultElementCode) {
+            option.selected = true;
+            elementSelect.selectedIndex = index + 1;
+          }
+
+          elementSelect.appendChild(option);
+        });
+      })
+      .catch(() => {
+        alert("Failed to get element list from server.");
+      });
+  }
+
+  //-----------------------
+  //- CHART -
+  //-----------------------
+
+  // Get context with jQuery - using jQuery's .get() method.
+  const entity5ChartCanvas = $("#entity5Chart").get(0).getContext("2d");
+
+  let entity5ChartData = {
+    labels: [],
+    datasets: [
+      {
+        label: "Digital Goods",
+        backgroundColor: "rgba(60,141,188,0.9)",
+        borderColor: "rgba(60,141,188,0.8)",
+        pointRadius: false,
+        pointColor: "#3b8bba",
+        pointStrokeColor: "rgba(60,141,188,1)",
+        pointHighlightFill: "#fff",
+        pointHighlightStroke: "rgba(60,141,188,1)",
+        data: [],
+      },
+    ],
+  };
+
+  const entity5ChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false,
+    },
+    scales: {
+      xAxes: [
+        {
+          gridLines: {
+            display: false,
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Year",
+          },
+        },
+      ],
+      yAxes: [
+        {
+          gridLines: {
+            display: false,
+          },
+          scaleLabel: {
+            display: true,
+            labelString: "Percentage %",
+          },
+        },
+      ],
+    },
+  };
+
+  // This will get the first returned node in the jQuery collection.
+  const entity5Chart = new Chart(entity5ChartCanvas, {
+    type: "line",
+    data: entity5ChartData,
+    options: entity5ChartOptions,
+  });
+
+  function loadChartData(init = false) {
+    const tempLIDiv1 = document.createElement("div");
+    tempLIDiv1.innerHTML = getLoadingIndicatorHtml();
+    const entity5Viz = document.getElementById("entity5Viz");
+    entity5Viz.appendChild(tempLIDiv1.firstElementChild);
+    const elementSelect = document.getElementById("element-select");
+    let elementValue = init
+      ? defaultElementCode
+      : elementSelect.options[elementSelect.selectedIndex].value;
+    // encoding plus '+' symbol as it is treated as space in url
+    elementValue = elementValue.replace(/\+/g, "PLUS-SIGN");
+    const yearFromValue = document.getElementById("year-from").value.trim();
+    const yearToValue = document.getElementById("year-to").value.trim();
+    const url = `/element_timeline_data?elementCode=${elementValue}&yearFrom=${yearFromValue}&yearTo=${yearToValue}`;
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Failed to get chart data for given element from server.");
+        }
+        return response.json();
+      })
+      .then(data => {
+        const labels = Object.keys(data["data"]);
+        const dataPoints = Object.values(data["data"]);
+        entity5ChartData.labels = labels;
+        entity5ChartData.datasets[0].data = dataPoints;
+        entity5Chart.update();
+        entity5Viz.removeChild(entity5Viz.lastChild);
+      })
+      .catch(error => {
+        alert(error.message);
+      });
+  }
+
+  //---------------------------
+  //- END CHART -
+  //---------------------------
+
+</script>
+{% endblock %}
+
+</html>

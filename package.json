@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "start": "python manage.py runserver",
+    "cy:run": "cypress run",
+    "test": "start-server-and-test start http://localhost:8000 cy:run"
+  },
+  
+  "devDependencies": {
+    "cypress": "^13.6.4",
+    "start-server-and-test": "^2.0.3"
+  }
+}
